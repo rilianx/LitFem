@@ -59,8 +59,16 @@ def promedios_por_momento(scores):
     return salida
 
 
-def mostrar_resultados_bonitos(resultado_json):
-    """Tabla de puntajes de una dimension + explicaciones de N/A + promedios."""
+def mostrar_resultados_bonitos(resultado_json, completo=False):
+    """
+    Muestra los resultados de UNA dimension.
+
+    completo=False (vista compacta, la que se usa al analizar las 6 dimensiones):
+        tabla de puntajes + explicaciones de los N/A + promedios.
+    completo=True (al analizar una sola dimension):
+        ademas personaje y obra, el reasoning de TODAS las preguntas agrupado por
+        momento, y los campos `analysis` y `conclusion` que devolvio el modelo.
+    """
     if not isinstance(resultado_json, dict) or "error" in resultado_json:
         _md(f"**Error en esta dimension:** `{resultado_json}`")
         return
@@ -71,6 +79,14 @@ def mostrar_resultados_bonitos(resultado_json):
     preguntas = _preguntas(scores, claves)
 
     _md(f"## DIMENSION: **{dim}**")
+
+    if completo:
+        personaje = resultado_json.get("character", "")
+        obra = resultado_json.get("book", "")
+        cabecera = [x for x in (f"**Personaje:** {personaje}" if personaje else "",
+                                f"**Obra/Fragmento:** {obra}" if obra else "") if x]
+        if cabecera:
+            _md("  \n".join(cabecera))
 
     data_df = {n: [] for n in nombres}
     na_explanations = []
@@ -88,7 +104,15 @@ def mostrar_resultados_bonitos(resultado_json):
 
     _display(pd.DataFrame(data_df, index=preguntas))
 
-    if na_explanations:
+    if completo:
+        # Todos los razonamientos, agrupados por momento
+        _md("### RAZONAMIENTO POR PREGUNTA")
+        for clave, nombre in zip(claves, nombres):
+            _md(f"#### {nombre}")
+            for q in preguntas:
+                score, reasoning = _score_y_razon(scores.get(clave, {}).get(q, {}))
+                _md(f"- **{q}** — puntaje `{score}`  \n  {reasoning or 'Sin justificacion'}")
+    elif na_explanations:
         _md("### Explicaciones de puntajes N/A:")
         for exp in na_explanations:
             _md(exp)
@@ -99,6 +123,14 @@ def mostrar_resultados_bonitos(resultado_json):
             _md(f"- **{nombre}**: N/A (Sin valores numericos)")
         else:
             _md(f"- **{nombre}**: {prom:.1f}")
+
+    if completo:
+        analisis = resultado_json.get("analysis", "")
+        conclusion = resultado_json.get("conclusion", "")
+        if analisis:
+            _md(f"### ANALISIS\n\n{analisis}")
+        if conclusion:
+            _md(f"### CONCLUSION\n\n{conclusion}")
 
     _md("---")
 

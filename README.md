@@ -40,9 +40,9 @@ mostrar_resumen_global(resultados)
 |---|---|
 | `configurar_api_key()` | Carga `OPENAI_API_KEY` desde entorno, Colab Secrets, `.env` o `getpass` |
 | `llm_function(prompt, esquema, ...)` | Llamada al LLM con salida forzada al esquema |
-| `analizar_dimension_ptmv(...)` | Analiza una dimensión |
-| `analizar_personaje_completo(...)` | Analiza todas las dimensiones en paralelo, muestra y exporta |
-| `mostrar_resultados_bonitos(res)` | Tabla + explicaciones de N/A + promedios de una dimensión |
+| `analizar_dimension_ptmv(...)` | Analiza una dimensión y muestra todo su detalle (`mostrar=False` para solo devolver el dict) |
+| `analizar_personaje_completo(...)` | Analiza todas las dimensiones en paralelo, muestra y exporta (`completo=True` para el detalle largo de cada una) |
+| `mostrar_resultados_bonitos(res, completo=)` | Vista compacta (tabla + N/A + promedios) o completa (razonamientos, análisis y conclusión) |
 | `mostrar_resumen_global(resultados)` | Tabla final dimensión × momento |
 | `exportar_resultados_excel(...)` | Excel de 4 hojas (Detalle, Promedios, Análisis, JSON crudo) |
 | `PTMVResult` | Esquema Pydantic de salida (score restringido a 1-5 o N/A) |
