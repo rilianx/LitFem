@@ -1,82 +1,67 @@
-"""Exportacion de resultados a Excel."""
-
-import json
-from datetime import datetime
+"""Exportacion a Excel: el formato largo y las tablas consolidadas."""
 
 import pandas as pd
 
-from .display import _momentos, _preguntas, _score_y_razon
+from .agregacion import formatear_con_error
 
-__all__ = ["exportar_resultados_excel"]
+__all__ = ["exportar_largo_excel", "exportar_consolidado_excel"]
 
 
-def exportar_resultados_excel(resultados_totales, character, nombre_archivo=None):
-    """
-    Guarda TODO lo devuelto por el modelo en un Excel de 4 hojas:
-      - Detalle    : una fila por (dimension, momento, pregunta) con score y reasoning
-      - Promedios  : promedio por dimension y momento (ignora los N/A)
-      - Analisis   : analysis + conclusion + book de cada dimension
-      - JSON crudo : el JSON completo tal cual lo devolvio el modelo (respaldo)
-    Devuelve el nombre del archivo.
-    """
-    if nombre_archivo is None:
-        sello = datetime.now().strftime("%Y%m%d_%H%M")
-        nombre_archivo = f"Analisis_PTMV_{character}_{sello}.xlsx"
+def _formatear_hojas(writer, ancho_max=60):
+    from openpyxl.styles import Alignment
+    from openpyxl.utils import get_column_letter
+    for hoja in writer.book.worksheets:
+        for j, col in enumerate(hoja.columns, start=1):
+            largo = max((len(str(c.value)) for c in col if c.value), default=10)
+            hoja.column_dimensions[get_column_letter(j)].width = min(max(12, largo + 2), ancho_max)
+        for fila in hoja.iter_rows(min_row=2):
+            for celda in fila:
+                celda.alignment = Alignment(wrap_text=True, vertical="top")
 
-    filas_detalle, filas_prom, filas_texto, filas_json = [], [], [], []
 
-    for dim, res in resultados_totales.items():
-        if not isinstance(res, dict) or "error" in res:
-            filas_json.append({"Dimension": dim, "JSON": str(res)})
-            continue
-
-        scores = res.get("scores", {})
-        claves, nombres = _momentos(scores)
-        preguntas = _preguntas(scores, claves)
-
-        filas_texto.append({
-            "Dimension":  dim,
-            "Personaje":  res.get("character", character),
-            "Obra":       res.get("book", ""),
-            "Analysis":   res.get("analysis", ""),
-            "Conclusion": res.get("conclusion", ""),
-        })
-        filas_json.append({"Dimension": dim,
-                           "JSON": json.dumps(res, ensure_ascii=False, indent=2)})
-
-        fila_prom = {"Dimension": dim}
-        for clave, nombre in zip(claves, nombres):
-            numericos = []
-            for q in preguntas:
-                score, razon = _score_y_razon(scores.get(clave, {}).get(q, {}))
-                filas_detalle.append({
-                    "Dimension": dim, "Momento": nombre, "Pregunta": q,
-                    "Score": score, "Reasoning": razon,
-                })
-                try:
-                    numericos.append(float(score))
-                except (TypeError, ValueError):
-                    pass  # los N/A no entran al promedio
-
-            fila_prom[nombre] = round(sum(numericos) / len(numericos), 2) if numericos else "N/A"
-        filas_prom.append(fila_prom)
-
+def _guardar(nombre_archivo, hojas):
     with pd.ExcelWriter(nombre_archivo, engine="openpyxl") as writer:
-        pd.DataFrame(filas_detalle).to_excel(writer, sheet_name="Detalle", index=False)
-        pd.DataFrame(filas_prom).to_excel(writer, sheet_name="Promedios", index=False)
-        pd.DataFrame(filas_texto).to_excel(writer, sheet_name="Analisis", index=False)
-        pd.DataFrame(filas_json).to_excel(writer, sheet_name="JSON crudo", index=False)
-
-        # ancho de columnas + wrap para que el reasoning se lea
-        from openpyxl.styles import Alignment
-        for hoja in writer.book.worksheets:
-            for col in hoja.columns:
-                letra = col[0].column_letter
-                largo = max((len(str(c.value)) for c in col if c.value), default=10)
-                hoja.column_dimensions[letra].width = min(max(12, largo + 2), 60)
-            for fila in hoja.iter_rows(min_row=2):
-                for celda in fila:
-                    celda.alignment = Alignment(wrap_text=True, vertical="top")
-
+        for nombre, (df, con_indice) in hojas.items():
+            df.to_excel(writer, sheet_name=nombre, index=con_indice)
+        _formatear_hojas(writer)
     print(f"Excel guardado: {nombre_archivo}")
     return nombre_archivo
+
+
+def exportar_largo_excel(largo, nombre_archivo, evidencia=None):
+    """Observaciones crudas (una fila por respuesta) y, si se pasa, las citas del modo C."""
+    hojas = {"Observaciones": (largo, False)}
+    if evidencia is not None:
+        hojas["Evidencia"] = (evidencia, False)
+    return _guardar(nombre_archivo, hojas)
+
+
+def exportar_consolidado_excel(cons, nombre_archivo):
+    """
+    Tablas de `consolidar`. Hojas: Dimensiones (media/error/n/N-A), Dimensiones ±,
+    Preguntas, Preguntas ±, Observaciones.
+    """
+    momentos, e = list(cons["dimensiones"].columns), cons["error"]
+
+    dim = pd.concat({"media": cons["dimensiones"], e: cons["dimensiones_err"],
+                     "n": cons["n_total"], "N/A": cons["n_na"]}, axis=1).swaplevel(axis=1)
+    dim = dim.reindex(columns=[(m, c) for m in momentos for c in ("media", e, "n", "N/A")])
+    dim.columns = [f"{m} {c}" for m, c in dim.columns]
+
+    filas_q, filas_txt = [], []
+    for d, media in cons["preguntas"].items():
+        err, n = cons["preguntas_err"][d], cons["preguntas_n"][d]
+        txt = formatear_con_error(media, err)
+        for q in media.index:
+            filas_q.append({"Dimension": d, "Pregunta": q,
+                            **{f"{m} {c}": t.loc[q, m] for m in momentos
+                               for c, t in (("media", media), (e, err), ("n", n))}})
+            filas_txt.append({"Dimension": d, "Pregunta": q, **{m: txt.loc[q, m] for m in momentos}})
+
+    return _guardar(nombre_archivo, {
+        "Dimensiones": (dim, True),
+        "Dimensiones ±": (formatear_con_error(cons["dimensiones"], cons["dimensiones_err"]), True),
+        "Preguntas": (pd.DataFrame(filas_q), False),
+        "Preguntas ±": (pd.DataFrame(filas_txt), False),
+        "Observaciones": (cons["largo"], False),
+    })

@@ -1,57 +1,84 @@
 # litfem
 
-Funciones genéricas para el análisis literario PTM-V con LLM (LangChain + OpenAI,
-salidas estructuradas con Pydantic).
+Análisis literario PTM-V de personajes con LLM (LangChain + OpenAI, salidas estructuradas).
 
-La librería **no contiene prompts**: el template de instrucciones y las preguntas
-de cada dimensión se definen en el notebook y se pasan como argumento, para poder
-experimentar con ellos sin tocar el repo.
+La librería **no contiene prompts ni preguntas**: viven en el notebook y se pasan como argumento.
 
-## Instalación (Colab)
+## Un solo procedimiento
 
-```python
-%pip install -q "git+https://github.com/USUARIO/REPO.git"
+```
+unidades  →  puntuar_unidades  →  consolidar
 ```
 
-## Uso mínimo
+Una *unidad* es lo que el modelo ve en UNA llamada, etiquetada con su etapa narrativa (A/B/C).
+En cada llamada viajan **todas las preguntas**, barajadas y con etiquetas neutras `S1…Sn`, sin
+decir a qué dimensión pertenecen. Los tres modos solo difieren en cómo se construyen las unidades:
+
+| Modo | Unidades | Llamadas |
+|---|---|---|
+| A · resumen | `unidades_resumen(texto)` — los momentos que el texto trae marcados | 3 |
+| B · libro | `unidades_libro(texto)` — fragmentos ~2000 palabras, muestra 5-10-5 | 20 |
+| C · evidencia → juez | `extraer_evidencia(...)` + `unidades_evidencia(df)` | 20 + 3 |
+
+Los tres devuelven **el mismo formato largo**: una fila por respuesta con `iteracion, dimension,
+momento, pregunta, score, score_txt, reasoning, fuente, etiqueta, posicion`.
 
 ```python
-from litfem import configurar_api_key, analizar_personaje_completo, mostrar_resumen_global, PTMVResult
+from litfem import (configurar_api_key, parsear_preguntas, unidades_libro,
+                    puntuar_unidades, consolidar, mostrar_consolidado)
 
 configurar_api_key()
+PREGUNTAS = parsear_preguntas([("P1", "enunciado…"), ("P2", "…"), ("Vr3", "…")])
 
-resultados = analizar_personaje_completo(
-    character="Alicia",
-    fragment=texto_del_resumen,
-    instructions=PTM_V_INSTRUCTIONS,      # definido en el notebook
-    dimensiones=PTM_V_DIMENSIONES_POR_GRUPO,
-    formato=PTMVResult,
-    excel="resultados.xlsx",
-)
-mostrar_resumen_global(resultados)
+unidades = unidades_libro(texto_libro, max_words=2000, seleccion=(5, 10, 5))
+largo = puntuar_unidades(unidades, "Alicia", PROMPT_PUNTUAR, PREGUNTAS, semilla=0)
+mostrar_consolidado(consolidar(largo), "Libro por fragmentos")
 ```
 
-`instructions` debe tener los placeholders `{dimensiones_texto}`, `{character}`,
-`{dimension}` y `{fragment}`. `dimensiones` es un `dict {clave: texto de preguntas}`.
+`PROMPT_PUNTUAR` usa `{character} {stage} {unit_id} {excerpt} {questions}`; el extractor añade
+`{max_citas}` y el juez `{fragment_ids}`. Las claves no usadas se ignoran.
 
 ## API
 
+**Preguntas y unidades**
+
 | Función | Qué hace |
 |---|---|
-| `configurar_api_key()` | Carga `OPENAI_API_KEY` desde entorno, Colab Secrets, `.env` o `getpass` |
-| `llm_function(prompt, esquema, ...)` | Llamada al LLM con salida forzada al esquema |
-| `analizar_dimension_ptmv(...)` | Analiza una dimensión y muestra todo su detalle (`mostrar=False` para solo devolver el dict) |
-| `analizar_personaje_completo(...)` | Analiza todas las dimensiones en paralelo, muestra y exporta (`completo=True` para el detalle largo de cada una) |
-| `mostrar_resultados_bonitos(res, completo=)` | Vista compacta (tabla + N/A + promedios) o completa (razonamientos, análisis y conclusión) |
-| `mostrar_resumen_global(resultados)` | Tabla final dimensión × momento |
-| `exportar_resultados_excel(...)` | Excel de 4 hojas (Detalle, Promedios, Análisis, JSON crudo) |
-| `PTMVResult` | Esquema Pydantic de salida (score restringido a 1-5 o N/A) |
+| `parsear_preguntas(preguntas)` | Normaliza el banco; acepta lista de pares `("P1", "…")` (recomendado), lista de dicts o el dict por dimensión. La dimensión sale del prefijo del id |
+| `barajar(preguntas, semilla)` / `formatear_preguntas(orden)` | Orden aleatorio reproducible y bloque para el prompt |
+| `esquema_puntajes(n)` | Modelo Pydantic con S1..Sn obligatorios (Structured Output) |
+| `unidades_resumen(texto, patron=)` | 3 unidades por los marcadores del resumen; si no los halla, corta 25/50/25 |
+| `unidades_libro(texto, max_words, seleccion)` | Fragmentos + muestra + etapa |
+| `unidades_evidencia(df, solo_verificadas=, excluir_fragmentos=)` | 1 unidad por etapa con la evidencia formateada |
+
+**Núcleo y modo C**
+
+| Función | Qué hace |
+|---|---|
+| `puntuar_unidades(unidades, personaje, prompt, preguntas, semilla=, iteracion=)` | Una llamada por unidad → formato largo |
+| `iterar(fn, num_iteraciones)` | Repite cambiando semilla e iteración, y concatena |
+| `extraer_evidencia(unidades, personaje, prompt, preguntas, max_citas=)` | Citas verbatim con polaridad, verificadas contra el texto |
+| `resumen_evidencia(df)` / `mostrar_evidencia(df, dimension=, etapa=)` | Conteo y listado de citas |
+| `agregar_jackknife(obs, error)` | Agregador con error jackknife para el leave-one-out |
+
+**Consolidación y vistas**
+
+| Función | Qué hace |
+|---|---|
+| `consolidar(largo, error=, agregador=, combinador=)` | (1) por dimensión×momento×pregunta, (2) media de preguntas por dimensión×momento |
+| `agregar_celda` / `combinar_preguntas` | Agregador y combinador por defecto; reemplazables desde el notebook |
+| `mostrar_consolidado(cons)` | Tablas `media ± error`, más n y N/A |
+| `comparar_modos({...})` / `comparar_consolidados(a, b)` | Varios modos lado a lado / diferencia entre dos |
+| `residuos_posicion(largo, control=)` | Resta lo esperado para esa misma pregunta: `"celda"` (pareado, misma pregunta y unidad, necesita iteraciones), `"aditivo"` (descuenta efecto de pregunta y de unidad) o `"auto"` |
+| `efecto_posicion(largo, control=)` | Residuo medio por tramo + recta residuo ~ posición con su t: ¿hay fatiga al final del prompt? |
+| `tabla_cruda`, `mostrar_razonamientos`, `mostrar_na` | Vistas del detalle crudo |
+| `exportar_consolidado_excel`, `exportar_largo_excel` | Excel de tablas y de observaciones |
 
 ## Publicar en GitHub
 
 ```bash
 cd litfem-pkg
-git init && git add . && git commit -m "litfem v0.1.0"
+git init && git add . && git commit -m "litfem v0.7.0"
 git remote add origin https://github.com/USUARIO/REPO.git
 git push -u origin main
 ```

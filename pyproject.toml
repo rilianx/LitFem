@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "litfem"
-version = "0.1.0"
+version = "0.7.0"
 description = "Analisis literario PTM-V con LLM (salidas estructuradas)"
 readme = "README.md"
 requires-python = ">=3.9"
@@ -12,6 +12,7 @@ dependencies = [
     "langchain-core",
     "langchain-openai",
     "pydantic>=2",
+    "numpy",
     "pandas",
     "openpyxl",
     "python-dotenv",
