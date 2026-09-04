@@ -84,19 +84,29 @@ mostrar_consolidado(consolidar(largo), "Libro por fragmentos")
 | `curva_unidades(largo)` | Curva de saturación: cuántos fragmentos hacen falta para que la tabla deje de moverse |
 | `comparar_agregadores({...}, largo)` | Evalúa agregadores por **señal/ruido**, no por el acuerdo con otro modo |
 
+**Corpus** (correr muchas obras desde una planilla)
+
+| Función | Qué hace |
+|---|---|
+| `plantilla_manifiesto(ruta)` | Escribe una planilla de ejemplo (`archivo`, `personajes`, y las columnas extra que quieras) |
+| `leer_manifiesto(ruta, carpeta_libros, carpeta_resumenes)` | Una fila por caso (archivo × personaje); avisa qué archivos faltan y conserva las columnas extra |
+| `verificar_corpus(manifiesto)` | Pre-vuelo: ¿se detectan los 3 momentos de cada resumen?, tamaños y costo en llamadas |
+| `correr_corpus(manifiesto, ...)` | Corre A y B de cada caso; **reanudable**: guarda un CSV por caso y saltea lo hecho |
+| `cargar_corpus(carpeta)` | Devuelve `{caso: {"A":…, "B":…, "obra":…, "personaje":…}}` |
+
 **Calibración del surrogado** (con un corpus de obras analizadas de las dos formas)
 
 | Función | Qué hace |
 |---|---|
 | `pares_de_consolidados({obra: (cons_sur, cons_ref)})` | Tabla de pares (obra, dimensión, momento, surrogado, referencia) |
-| `calibrar(pares)` | Ajusta desfase/recta, global o por dimensión, y los valida **dejando una obra fuera**: el MAE de validación es el error esperado en una obra nueva |
+| `calibrar(pares, grupo="obra")` | Ajusta desfase/recta, global o por dimensión, y los valida **dejando la obra completa fuera** (dos personajes del mismo libro nunca se separan): el MAE de validación es el error esperado en una obra nueva |
 | `MODELOS` | Los modelos de calibración disponibles, para aplicar el elegido a una obra nueva |
 
 ## Publicar en GitHub
 
 ```bash
 cd litfem-pkg
-git init && git add . && git commit -m "litfem v0.10.0"
+git init && git add . && git commit -m "litfem v0.11.0"
 git remote add origin https://github.com/USUARIO/REPO.git
 git push -u origin main
 ```

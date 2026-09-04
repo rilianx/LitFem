@@ -23,13 +23,22 @@ from .comun import _md, _display
 __all__ = ["pares_de_consolidados", "calibrar", "MODELOS"]
 
 
-def pares_de_consolidados(por_obra, nombre_sur="surrogado", nombre_ref="referencia"):
+def pares_de_consolidados(por_caso, nombre_sur="surrogado", nombre_ref="referencia",
+                          metadatos=None):
     """
-    {obra: (cons_surrogado, cons_referencia)} -> DataFrame de pares, una fila por
-    (obra, dimension, momento) con las dos estimaciones.
+    {caso: (cons_surrogado, cons_referencia)} -> DataFrame de pares, una fila por
+    (caso, dimension, momento) con las dos estimaciones.
+
+    `metadatos`: {caso: {"obra":..., "personaje":...}}. Importa cuando dos
+    personajes salen del MISMO libro: son dos casos pero una sola obra, y la
+    validacion cruzada tiene que dejar fuera la obra entera.
     """
+    metadatos = metadatos or {}
     filas = []
-    for obra, (cons_sur, cons_ref) in por_obra.items():
+    for caso, (cons_sur, cons_ref) in por_caso.items():
+        meta = metadatos.get(caso, {})
+        obra = meta.get("obra", caso)
+        personaje = meta.get("personaje", "")
         sur, ref = cons_sur["dimensiones"], cons_ref["dimensiones"]
         for dim in sur.index:
             if dim not in ref.index:
@@ -37,7 +46,8 @@ def pares_de_consolidados(por_obra, nombre_sur="surrogado", nombre_ref="referenc
             for momento in sur.columns:
                 s, r = sur.loc[dim, momento], ref.loc[dim, momento]
                 if pd.notna(s) and pd.notna(r):
-                    filas.append({"obra": obra, "dimension": dim, "momento": momento,
+                    filas.append({"caso": caso, "obra": obra, "personaje": personaje,
+                                  "dimension": dim, "momento": momento,
                                   nombre_sur: float(s), nombre_ref: float(r)})
     return pd.DataFrame(filas)
 
@@ -95,11 +105,14 @@ MODELOS = {
 
 
 def calibrar(pares, surrogado="surrogado", referencia="referencia",
-             modelos=None, mostrar=True):
+             modelos=None, grupo="obra", mostrar=True):
     """
     Ajusta y valida modelos de calibracion con leave-one-obra-out.
 
-    pares: DataFrame de `pares_de_consolidados` (obra, dimension, momento, sur, ref)
+    pares : DataFrame de `pares_de_consolidados`
+    grupo : columna que define el bloque de validacion cruzada. Por defecto "obra":
+            dos personajes del mismo libro salen juntos, nunca uno para entrenar
+            y otro para evaluar.
 
     Devuelve {"tabla", "predicciones", "parametros"}:
       tabla         : por modelo, MAE y sesgo de AJUSTE y de VALIDACION
@@ -108,7 +121,9 @@ def calibrar(pares, surrogado="surrogado", referencia="referencia",
                       de aqui en adelante en obras nuevas)
     """
     modelos = modelos or MODELOS
-    obras = sorted(pares["obra"].unique())
+    if grupo not in pares.columns:
+        grupo = "obra" if "obra" in pares.columns else pares.columns[0]
+    obras = sorted(pares[grupo].unique())
     if len(obras) < 3:
         _md(f"> Solo hay {len(obras)} obra(s): la validacion cruzada necesita al menos 3, "
             "e idealmente 15-20 para que la calibracion sea creible.")
@@ -122,7 +137,7 @@ def calibrar(pares, surrogado="surrogado", referencia="referencia",
         pred_cv = np.full(len(pares), np.nan)
         if len(obras) >= 3:
             for obra in obras:
-                fuera = (pares["obra"] == obra).values
+                fuera = (pares[grupo] == obra).values
                 p = ajustar(pares[~fuera], surrogado, referencia)
                 pred_cv[fuera] = aplicar(p, pares[fuera], surrogado)
 
@@ -141,7 +156,13 @@ def calibrar(pares, surrogado="surrogado", referencia="referencia",
     predicciones = pares.assign(**pred_cols)
 
     if mostrar:
-        _md(f"## Calibracion del surrogado ({len(obras)} obras, {len(pares)} celdas)")
+        casos = pares["caso"].nunique() if "caso" in pares else len(obras)
+        _md(f"## Calibracion del surrogado ({len(obras)} {grupo}s, {casos} casos, "
+            f"{len(pares)} celdas)")
+        if "caso" in pares and casos > len(obras):
+            _md(f"> La validacion cruzada deja fuera **la {grupo} completa**, no el caso: dos "
+                "personajes del mismo libro comparten el texto y evaluarlos por separado seria "
+                "entrenar y medir con la misma obra.")
         _display(tabla)
         col = "MAE validacion" if "MAE validacion" in tabla else "MAE ajuste"
         mejor = tabla[col].idxmin()
