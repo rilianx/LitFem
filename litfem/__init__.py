@@ -26,10 +26,14 @@ from .display import (tabla_cruda, mostrar_razonamientos, mostrar_na,
 from .agregacion import (unir_largos, agregar_celda, combinar_preguntas, consolidar,
                          formatear_con_error, mostrar_consolidado, comparar_consolidados,
                          comparar_modos)
+from .acuerdo import acuerdo, grafico_acuerdo
+from .calibracion import pares_de_consolidados, calibrar, MODELOS
+from .validacion import (repetibilidad, fiabilidad_preguntas, curva_unidades,
+                         comparar_agregadores)
 from .export import exportar_largo_excel, exportar_consolidado_excel
 
-__version__ = "0.7.0"
+__version__ = "0.10.0"
 
 __all__ = [n for n in dir() if not n.startswith("_") and n not in
            ("comun", "llm", "schemas", "preguntas", "unidades", "puntuar",
-            "evidencia", "display", "agregacion", "export")]
+            "evidencia", "display", "agregacion", "validacion", "calibracion", "export")]

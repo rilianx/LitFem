@@ -125,6 +125,14 @@ def efecto_posicion(largo, control="auto", bins=6, mostrar=True):
 
     b, se, n = _pendiente(df["posicion"], df["residuo"])
     b_na, se_na, _ = _pendiente(df["posicion"], df["score"].isna().astype(float))
+    b_w, se_w, _ = _pendiente(df["posicion"], df["reasoning"].str.split().str.len())
+
+    # Magnitud: con n grande, |t| > 2 no implica que el efecto importe.
+    sd = df["residuo"].std(ddof=1)
+    tramo_pos = df["posicion"].max() - df["posicion"].min()
+    efecto_total = b * tramo_pos
+    en_sd = efecto_total / sd if sd else np.nan
+    var_explicada = (b * df["posicion"].std(ddof=1) / sd) ** 2 if sd else np.nan
 
     if mostrar:
         etiqueta = {"celda": "misma pregunta en la misma unidad (pareado)",
@@ -132,19 +140,38 @@ def efecto_posicion(largo, control="auto", bins=6, mostrar=True):
                     "ninguno": "sin control"}[ctrl]
         _md(f"### Efecto de la posicion en el prompt\n\nControl: **{etiqueta}** · {n:,} respuestas puntuadas")
         _display(t)
-        if not np.isnan(b):
+        if not (np.isnan(b) or np.isnan(se) or se == 0):
             _md(f"- Puntaje: **{10*b:+.3f} ± {10*se:.3f}** por cada 10 posiciones "
-                f"(t = {b/se:+.1f}) → sobre las {int(df['posicion'].max())} preguntas, "
-                f"{b*df['posicion'].max():+.2f} puntos.")
-            _md(f"- Tasa de N/A: **{10*b_na:+.1%} ± {10*se_na:.1%}** por cada 10 posiciones "
-                f"(t = {b_na/se_na:+.1f}).")
-            sospechosos = [n for n, (bb, ss) in (("el puntaje", (b, se)), ("la tasa de N/A", (b_na, se_na)))
-                           if ss and abs(bb / ss) >= 2]
-            if sospechosos:
-                _md(f"**Hay senal de posicion en {' y '.join(sospechosos)}** (|t| >= 2). "
-                    "Si la magnitud te importa para la escala 1-5, parte `PREGUNTAS` en lotes y "
-                    "llama varias veces por unidad; el resto del pipeline no cambia.")
-            else:
-                _md("No hay evidencia de fatiga (|t| < 2 en ambas): preguntar las "
+                f"(t = {b/se:+.1f}). De la primera a la ultima pregunta: **{efecto_total:+.2f} puntos** "
+                f"= {en_sd:.2f} desviaciones del residuo (sd = {sd:.2f}); "
+                f"la posicion explica el **{var_explicada:.1%}** de la variabilidad.")
+            if not (np.isnan(b_na) or np.isnan(se_na) or se_na == 0):
+                _md(f"- Tasa de N/A: **{10*b_na:+.1%} ± {10*se_na:.1%}** por cada 10 posiciones "
+                    f"(t = {b_na/se_na:+.1f}).")
+            if not (np.isnan(b_w) or np.isnan(se_w) or se_w == 0):
+                _md(f"- Largo del razonamiento: **{10*b_w:+.1f} ± {10*se_w:.1f}** palabras por cada "
+                    f"10 posiciones (t = {b_w/se_w:+.1f}) — el esfuerzo puede caer aunque el puntaje no.")
+            sospechosos = [nom for nom, (bb, ss) in (("el puntaje", (b, se)),
+                                                     ("la tasa de N/A", (b_na, se_na)),
+                                                     ("el largo del razonamiento", (b_w, se_w)))
+                           if ss and not np.isnan(ss) and not np.isnan(bb) and abs(bb / ss) >= 2]
+            puntaje_afectado = "el puntaje" in sospechosos
+
+            if not sospechosos:
+                _md(f"**Sin efecto de posicion** (|t| < 2 en todo): preguntar las "
                     f"{int(df['posicion'].max())} juntas es seguro.")
+            elif puntaje_afectado and abs(en_sd) >= 0.5:
+                _md(f"**Efecto grande en el puntaje**: {efecto_total:+.2f} puntos de punta a punta "
+                    f"({en_sd:.2f} sd, {var_explicada:.1%} de la variabilidad). Conviene partir "
+                    "`PREGUNTAS` en lotes y llamar varias veces por unidad; el resto no cambia.")
+            elif puntaje_afectado:
+                _md(f"**Efecto en el puntaje detectable pero pequeno**: {efecto_total:+.2f} puntos "
+                    f"de punta a punta ({en_sd:.2f} sd, {var_explicada:.1%} de la variabilidad). "
+                    "Como el orden se baraja en cada llamada, cada pregunta cae temprano y tarde por "
+                    "igual: **no sesga** las tablas consolidadas, solo les agrega algo de ruido. "
+                    "Con n grande, |t| >= 2 dice que el efecto existe, no que importe.")
+            else:
+                _md("**El puntaje no se ve afectado** por la posicion, pero si "
+                    f"{' y '.join(sospechosos)}. Las tablas consolidadas no cambian; revisa los "
+                    "razonamientos de las ultimas posiciones si los usas como material cualitativo.")
     return t
