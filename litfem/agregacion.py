@@ -17,7 +17,7 @@ import pandas as pd
 from .comun import MOMENTOS, _md, _display
 
 __all__ = [
-    "MOMENTOS", "unir_largos", "agregar_celda", "combinar_preguntas", "consolidar",
+    "MOMENTOS", "unir_largos", "agregar_celda", "agregador_por_dimension", "combinar_preguntas", "consolidar",
     "formatear_con_error", "mostrar_consolidado", "comparar_consolidados", "comparar_modos",
 ]
 
@@ -44,6 +44,34 @@ def agregar_celda(obs, error="sem"):
     return {"valor": v.mean() if n else np.nan,
             "error": sd / np.sqrt(n) if error == "sem" else sd,
             "n": n}
+
+
+def agregador_por_dimension(evento=("T",), q=0.8, base=None):
+    """
+    Fabrica un agregador que trata distinto las dimensiones de EVENTO y las de ESTADO.
+
+    Dimensiones de estado (M, Vn, Vr, Vp...): la media de las observaciones, como
+    `agregar_celda`. Dimensiones de evento (`evento`, por defecto T): el percentil
+    `q` de las observaciones. Razon: "impacto transformador" pregunta si el
+    personaje hizo algo decisivo en la etapa, no en cuantos fragmentos lo hizo;
+    en un libro la mayoria de los fragmentos son descripcion o dialogo, la
+    distribucion de T es bimodal (muchos 2, algunos 5) y la media la aplasta.
+    Validado en el corpus de 5 clasicos: baja el sesgo resumen-libro en T de
+    +1.19 a +0.38 a cambio de ~7 % de senal/ruido.
+
+    `base`: agregador para las dimensiones de estado (por defecto `agregar_celda`).
+    """
+    base = base or agregar_celda
+
+    def agregar(obs, error="sem"):
+        if obs["dimension"].iloc[0] not in evento:
+            return base(obs, error)
+        v = obs["score"].dropna()
+        n = int(v.count())
+        valor = (v.quantile(q) if n >= 3 else v.max()) if n else np.nan
+        sd = v.std(ddof=1) if n > 1 else np.nan
+        return {"valor": valor, "error": sd / np.sqrt(n) if error == "sem" else sd, "n": n}
+    return agregar
 
 
 def combinar_preguntas(valores, errores, error="sem"):

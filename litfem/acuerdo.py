@@ -15,7 +15,7 @@ import pandas as pd
 
 from .comun import _md, _display
 
-__all__ = ["acuerdo", "grafico_acuerdo"]
+__all__ = ["acuerdo", "grafico_acuerdo", "grafico_acuerdo_corpus"]
 
 # Paleta categorica validada (6 slots, orden fijo) y marcadores por momento:
 # la identidad nunca queda solo en el color.
@@ -198,3 +198,78 @@ def grafico_acuerdo(ref, sur, nombre_ref="Referencia", nombre_sur="Surrogado", u
              ha="center", fontsize=8, color="#52514e")
     fig.tight_layout()
     return fig
+
+
+def grafico_acuerdo_corpus(pares, surrogado="A_resumen", referencia="B_libro", color="dimension",
+                           etiquetar=1.0, titulo=None, mostrar_stats=True):
+    """
+    Acuerdo surrogado vs referencia sobre TODAS las celdas del corpus (una fila de
+    `pares` por caso x dimension x momento, como devuelve `pares_de_consolidados`).
+    Dos paneles: identidad y Bland-Altman. Forma = momento (o, cuadrado, triangulo);
+    `color` = "dimension" (por defecto) o "caso" / "obra" para ver si alguna obra se
+    desvia en bloque. `etiquetar`: anota las celdas con |dif| mayor que ese valor
+    (None para no anotar). Devuelve la figura y un dict con sesgo, MAE, r y LoA.
+    """
+    try:
+        import matplotlib.pyplot as plt
+    except ImportError:
+        print("matplotlib no disponible; omito el grafico.")
+        return None, None
+
+    p = pares.dropna(subset=[surrogado, referencia]).copy()
+    x, y = p[referencia].values, p[surrogado].values
+    dif, med = y - x, (x + y) / 2
+    sesgo, sd = dif.mean(), dif.std(ddof=1)
+    stats = {"n": len(p), "sesgo": sesgo, "mae": np.abs(dif).mean(),
+             "r": np.corrcoef(x, y)[0, 1] if len(p) > 2 else np.nan, "loa": 1.96 * sd}
+
+    grupos = list(dict.fromkeys(p[color]))
+    paleta = {g: _COLORES[k % len(_COLORES)] for k, g in enumerate(grupos)}
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 5.2))
+    fig.patch.set_facecolor("#fcfcfb")
+    for ax in (ax1, ax2):
+        ax.set_facecolor("#fcfcfb"); ax.grid(True, color="#e6e5e2", linewidth=0.8); ax.set_axisbelow(True)
+        for lado in ("top", "right"): ax.spines[lado].set_visible(False)
+        for lado in ("left", "bottom"): ax.spines[lado].set_color("#c9c8c4")
+        ax.tick_params(colors="#52514e", labelsize=9)
+
+    lim = (0.8, 5.2)
+    ax1.plot(lim, lim, color="#c9c8c4", linewidth=2, zorder=1)
+    for (g, m), sub in p.groupby([color, "momento"], sort=False):
+        kw = dict(s=55, color=paleta[g], marker=_MARCADORES.get(m, "o"), alpha=0.9,
+                  edgecolor="#fcfcfb", linewidth=1.2, zorder=3)
+        ax1.scatter(sub[referencia], sub[surrogado], **kw)
+        ax2.scatter((sub[referencia] + sub[surrogado]) / 2, sub[surrogado] - sub[referencia], **kw)
+    if etiquetar is not None:
+        for _, r in p[np.abs(dif) > etiquetar].iterrows():
+            quien = str(r["personaje"] if "personaje" in p.columns else r["caso"]).split()[0][:12]
+            ax1.annotate(f"{quien}·{r['dimension']}{r['momento']}",
+                         (r[referencia], r[surrogado]), textcoords="offset points", xytext=(6, 3),
+                         fontsize=7, color="#52514e")
+    for g in grupos:
+        ax1.scatter([], [], color=paleta[g], s=40, label=str(g)[:18])
+    for m, mk in _MARCADORES.items():
+        ax1.scatter([], [], color="#52514e", marker=mk, s=40, label=f"momento {m}")
+    ax1.legend(frameon=False, fontsize=8, labelcolor="#52514e", ncol=2, loc="upper left")
+    ax1.set(xlim=lim, ylim=lim, xlabel=f"{referencia} (referencia)", ylabel=f"{surrogado} (surrogado)")
+    ax1.set_aspect("equal")
+    ax1.set_title(f"Identidad · {stats['n']} celdas" +
+                  (f"   sesgo {sesgo:+.2f} · MAE {stats['mae']:.2f} · r {stats['r']:.2f}" if mostrar_stats else ""),
+                  fontsize=10, color="#0b0b0b", loc="left")
+
+    ax2.axhline(0, color="#c9c8c4", linewidth=2)
+    ax2.axhline(sesgo, color="#52514e", linewidth=2, linestyle="--")
+    for la in (sesgo - 1.96 * sd, sesgo + 1.96 * sd):
+        ax2.axhline(la, color="#c9c8c4", linewidth=1.5, linestyle=":")
+    ax2.axhspan(sesgo - 1.96 * sd, sesgo + 1.96 * sd, color="#52514e", alpha=0.05)
+    ax2.annotate(f"sesgo {sesgo:+.2f}", (lim[1], sesgo), textcoords="offset points", xytext=(-4, 5),
+                 ha="right", fontsize=8, color="#52514e")
+    ax2.annotate(f"limites de acuerdo ±{1.96*sd:.2f}", (lim[0], sesgo + 1.96 * sd),
+                 textcoords="offset points", xytext=(4, 4), fontsize=8, color="#52514e")
+    ax2.set(xlim=lim, xlabel="Media de los dos modos", ylabel=f"{surrogado} − {referencia}")
+    ax2.set_title("Bland-Altman · cuanto se desvia y en que rango de puntaje", fontsize=10,
+                  color="#0b0b0b", loc="left")
+    if titulo:
+        fig.suptitle(titulo, fontsize=11, color="#0b0b0b")
+    fig.tight_layout()
+    return fig, stats

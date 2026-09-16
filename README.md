@@ -67,11 +67,13 @@ mostrar_consolidado(consolidar(largo), "Libro por fragmentos")
 |---|---|
 | `consolidar(largo, error=, agregador=, combinador=)` | (1) por dimensión×momento×pregunta, (2) media de preguntas por dimensión×momento |
 | `agregar_celda` / `combinar_preguntas` | Agregador y combinador por defecto; reemplazables desde el notebook |
+| `agregador_por_dimension(evento={"T"}, q=0.8)` | Dimensiones de **evento** por percentil alto, las de estado por media. Validado en 5 clásicos: baja el sesgo resumen–libro en T de +1.19 a +0.38 |
 | `mostrar_consolidado(cons)` | Tablas `media ± error`, más n y N/A |
 | `comparar_modos({...})` / `comparar_consolidados(a, b)` | Varios modos lado a lado / diferencia entre dos |
 | `residuos_posicion(largo, control=)` | Resta lo esperado para esa misma pregunta: `"celda"` (pareado, misma pregunta y unidad, necesita iteraciones), `"aditivo"` (descuenta efecto de pregunta y de unidad) o `"auto"` |
 | `efecto_posicion(largo, control=)` | Residuo medio por tramo + pendiente residuo ~ posición con su t **y su magnitud** (puntos de punta a punta, sd, % de variabilidad); también la tendencia de N/A y del largo del razonamiento |
 | `tabla_cruda`, `mostrar_razonamientos`, `mostrar_na` | Vistas del detalle crudo |
+| `grafico_acuerdo_corpus(pares, color="dimension"\|"caso")` | Scatter identidad + Bland-Altman de **todas** las celdas del corpus; devuelve figura y sesgo/MAE/r/LoA |
 | `acuerdo(referencia, surrogado, grafico=)` | ¿Sirve un modo como surrogado de otro? Sesgo, MAE, límites de acuerdo, z por celda, dónde se concentra el desacuerdo, calibración; con `grafico=True`, identidad + Bland-Altman |
 | `exportar_consolidado_excel`, `exportar_largo_excel` | Excel de tablas y de observaciones |
 
@@ -80,7 +82,8 @@ mostrar_consolidado(consolidar(largo), "Libro por fragmentos")
 | Función | Qué hace |
 |---|---|
 | `repetibilidad(largo)` | Test-retest: MAE entre corridas del mismo modo. Es el **techo** de acuerdo alcanzable contra cualquier otro modo |
-| `fiabilidad_preguntas(largo)` | Por pregunta: tasa de N/A, ruido, y discriminación (¿separa unas unidades de otras?) |
+| `fiabilidad_preguntas(largo)` | Por pregunta: N/A, **N/A inconsistente** (misma unidad, a veces N/A y a veces número; y si ese número es bajo o alto), sd test-retest, flips y discriminación. Señala los tres síntomas de mala formulación |
+| `divergencias(largo, "P5", tipo="na"\|"div")` | Razonamientos de la misma unidad con respuestas discordantes, para ver cómo el modelo lee el enunciado de dos maneras |
 | `curva_unidades(largo)` | Curva de saturación: cuántos fragmentos hacen falta para que la tabla deje de moverse |
 | `comparar_agregadores({...}, largo)` | Evalúa agregadores por **señal/ruido**, no por el acuerdo con otro modo |
 
@@ -106,7 +109,7 @@ mostrar_consolidado(consolidar(largo), "Libro por fragmentos")
 
 ```bash
 cd litfem-pkg
-git init && git add . && git commit -m "litfem v0.11.0"
+git init && git add . && git commit -m "litfem v0.14.0"
 git remote add origin https://github.com/USUARIO/REPO.git
 git push -u origin main
 ```

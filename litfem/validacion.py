@@ -19,7 +19,7 @@ import pandas as pd
 from .comun import _md, _display
 from .agregacion import consolidar, agregar_celda
 
-__all__ = ["repetibilidad", "fiabilidad_preguntas", "curva_unidades", "comparar_agregadores"]
+__all__ = ["repetibilidad", "fiabilidad_preguntas", "divergencias", "curva_unidades", "comparar_agregadores"]
 
 
 def _tablas_por_iteracion(largo, **kw):
@@ -68,47 +68,100 @@ def repetibilidad(largo, mostrar=True, **kw):
 
 def fiabilidad_preguntas(largo, mostrar=True, top=10):
     """
-    Por pregunta: cuanto N/A produce, cuanto varia entre corridas de la misma
-    unidad (ruido) y cuanto separa unas unidades de otras (senal).
-
-    `discriminacion` = sd entre unidades / (sd entre unidades + sd dentro de celda).
-    Cerca de 1: la pregunta distingue unidades. Cerca de 0: contesta casi lo mismo
-    en todas partes, o el ruido se come la senal -> candidata a reescribir.
+    Por pregunta, sobre la MISMA unidad (fuente x momento) en distintas corridas:
+      tasa N/A            : proporcion de respuestas N/A
+      N/A inconsistente   : unidades que a veces reciben N/A y a veces un numero
+                            (el criterio de aplicabilidad es ambiguo)
+      N/A vs bajo / alto  : de esas, en cuantas el numero es <=2 (el modelo no sabe
+                            si "no hay evidencia" es N/A o 1) o >=4 (no sabe si
+                            "la condicion no se da porque el personaje la supera"
+                            es N/A o 5)
+      sd test-retest      : desviacion entre corridas de la misma unidad (ruido)
+      flips >=2           : unidades cuyo puntaje cambia 2 o mas puntos entre corridas
+      sd entre unidades   : cuanto separa unas unidades de otras (senal)
+      discriminacion      : senal / (senal + ruido); cerca de 0 -> reescribir
+    Un N/A inconsistente alto es peor que un N/A alto: el N/A sale del promedio, asi
+    que segun la corrida la misma escena cuenta o no cuenta.
     """
     df = largo.copy()
-    celda = ["dimension", "pregunta", "fuente", "momento"]
-    dentro = df.groupby(celda)["score"].transform("mean")
-
+    unidad = ["fuente", "momento"]
     filas = []
     for (dim, q), g in df.groupby(["dimension", "pregunta"], sort=False):
-        medias_unidad = g.groupby(["fuente", "momento"])["score"].mean()
-        sd_entre = medias_unidad.std(ddof=1)
-        sd_dentro = (g["score"] - dentro[g.index]).std(ddof=1)
-        total = (sd_entre or 0) + (sd_dentro or 0)
+        por_u = g.groupby(unidad)["score"]
+        medias = por_u.mean()
+        sd_entre = medias.std(ddof=1)
+        sd_dentro = por_u.std(ddof=1)
+        rango = por_u.max() - por_u.min()
+        algun_na = por_u.apply(lambda s: s.isna().any())
+        algun_num = por_u.apply(lambda s: s.notna().any())
+        inc = algun_na & algun_num
+        maxs, mins = por_u.max()[inc], por_u.min()[inc]
+        total = (sd_entre or 0) + (sd_dentro.mean() or 0)
         filas.append({
             "id": f"{dim}{q[1:]}", "dimension": dim, "pregunta": q,
             "n": int(g["score"].notna().sum()),
             "tasa N/A": g["score"].isna().mean(),
+            "N/A inconsistente": inc.mean(),
+            "N/A vs bajo": (maxs <= 2).mean() if inc.any() else np.nan,
+            "N/A vs alto": (mins >= 4).mean() if inc.any() else np.nan,
             "media": g["score"].mean(),
+            "sd test-retest": sd_dentro.mean(),
+            "flips >=2": (rango >= 2).mean(),
             "sd entre unidades": sd_entre,
-            "sd dentro (ruido)": sd_dentro,
             "discriminacion": (sd_entre / total) if total else np.nan,
         })
     t = pd.DataFrame(filas).set_index("id").round(3)
 
     if mostrar:
         _md("### Fiabilidad por pregunta")
-        _md("Las mas problematicas (mucho N/A o poca discriminacion):")
-        _display(t.sort_values(["discriminacion", "tasa N/A"], ascending=[True, False]).head(top))
-        muchas_na = t.index[t["tasa N/A"] > 0.5].tolist()
+        _md("Ordenadas de mas a menos ruidosas (sd test-retest):")
+        _display(t.sort_values("sd test-retest", ascending=False).head(top))
+        med = t["sd test-retest"].median()
+        ruidosas = t.index[t["sd test-retest"] > 1.4 * med].tolist()
+        na_bajo = t.index[(t["N/A inconsistente"] > 0.3) & (t["N/A vs bajo"] > 0.6)].tolist()
+        na_alto = t.index[(t["N/A inconsistente"] > 0.15) & (t["N/A vs alto"] > 0.6)].tolist()
         planas = t.index[t["discriminacion"] < 0.4].tolist()
-        if muchas_na:
-            _md(f"- **> 50 % de N/A**: {', '.join(muchas_na)} — el texto casi nunca las contesta; "
-                "revisa el enunciado o acepta que miden cobertura mas que grado.")
+        if ruidosas:
+            _md(f"- **Ruido test-retest alto** (>1.4x la mediana {med:.2f}): {', '.join(ruidosas)} — "
+                "la misma unidad recibe puntajes distintos segun la corrida; revisa la escala o el alcance "
+                "(¿escena o conflicto global?) con `divergencias`.")
+        if na_bajo:
+            _md(f"- **N/A ↔ 1-2**: {', '.join(na_bajo)} — el modelo no sabe si la AUSENCIA de la condicion "
+                "es N/A o puntaje bajo. Como el N/A sale del promedio, esto INFLA la dimension. "
+                "Aclarar en el enunciado: ausencia => puntaje bajo; N/A solo si no hay contexto para juzgar.")
+        if na_alto:
+            _md(f"- **N/A ↔ 4-5**: {', '.join(na_alto)} — cuando el personaje supera la condicion "
+                "(resiste, no cede) el modelo a veces dice 'no hubo sumision => N/A'. Separar el "
+                "disparador (hay presion) del grado (cuanto se mantiene).")
         if planas:
-            _md(f"- **Discriminacion baja**: {', '.join(planas)} — responden casi igual en todas "
-                "las unidades, asi que aportan poco a las diferencias entre momentos.")
+            _md(f"- **Discriminacion baja**: {', '.join(planas)} — responden casi igual en todas las unidades.")
     return t
+
+
+def divergencias(largo, id_pregunta, tipo="na", k=3, ancho=260, mostrar=True):
+    """
+    Razonamientos de la MISMA unidad con respuestas discordantes para una pregunta
+    (`id_pregunta` como "Vr1"): para ver como el modelo lee el enunciado de dos maneras.
+      tipo="na"   : unidades con N/A en una corrida y numero en otra
+      tipo="div"  : unidades sin N/A cuyo puntaje cambia >= 2 puntos
+    Devuelve el sub-largo seleccionado.
+    """
+    import textwrap
+    df = largo[(largo["dimension"] + largo["pregunta"].str[1:]) == id_pregunta]
+    por_u = df.groupby(["fuente", "momento"])
+    if tipo == "na":
+        sel = [u for u, d in por_u if d["score"].isna().any() and d["score"].notna().any()]
+    else:
+        sel = [u for u, d in por_u if d["score"].notna().all() and d["score"].max() - d["score"].min() >= 2]
+    out = pd.concat([por_u.get_group(u) for u in sel[:k]]) if sel else df.iloc[0:0]
+    if mostrar:
+        _md(f"### {id_pregunta} · {len(sel)}/{por_u.ngroups} unidades discordantes ({tipo})")
+        for u in sel[:k]:
+            d = por_u.get_group(u).sort_values("iteracion")
+            lineas = [f"- it{r.iteracion} **{'N/A' if pd.isna(r.score) else int(r.score)}**: "
+                      f"{textwrap.shorten(str(r.reasoning), ancho)}" for r in d.itertuples()]
+            _md(f"**unidad {u[0]} · momento {u[1]}**\n\n" + "\n".join(lineas))
+    return out
 
 
 def curva_unidades(largo, tamanos=None, repeticiones=20, semilla=0, mostrar=True, **kw):
