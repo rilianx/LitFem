@@ -1,0 +1,6 @@
+{
+  "banco": "bancos/ptmv_v4.py",
+  "salida": "corpus/resultados/v4",
+  "obras": "Tess of the d'Urbervilles",
+  "paralelo": 3
+}

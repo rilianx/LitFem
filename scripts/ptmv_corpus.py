@@ -151,7 +151,12 @@ def leer_manifiesto(ruta, raiz):
     return man
 
 
-def filtrar(man, quien):
+def filtrar(man, quien, obras=None):
+    if obras:
+        pedidas = [o.strip().lower() for o in obras.split(",") if o.strip()]
+        man = man[man["obra"].str.lower().isin(pedidas)]
+        if man.empty:
+            sys.exit(f"Ninguna obra del manifiesto coincide con {obras!r}.")
     if quien:
         if "responsable" not in man.columns:
             sys.exit("--quien necesita una columna `responsable` en el manifiesto.")
@@ -164,7 +169,7 @@ def filtrar(man, quien):
 # ═══════════════════════════════════ subcomandos ═══════════════════════════════════
 
 def cmd_verificar(a):
-    man = filtrar(leer_manifiesto(a.manifiesto, a.raiz), a.quien)
+    man = filtrar(leer_manifiesto(a.manifiesto, a.raiz), a.quien, a.obras)
     ver = verificar_corpus(man, max_words=MEDICION["max_words"], seleccion=tuple(MEDICION["seleccion"]),
                            n_a=MEDICION["n_a"], n_b=MEDICION["n_b"], patron=PATRON_MOMENTOS, mostrar=False)
     with pd.option_context("display.width", 200, "display.max_columns", 20):
@@ -183,7 +188,7 @@ def cmd_correr(a):
         sys.exit("Falta OPENAI_API_KEY (variable de entorno, Colab Secrets o .env).")
     preguntas_ptmv, prompt = cargar_banco(a.banco)
     preguntas = parsear_preguntas(preguntas_ptmv)
-    man = filtrar(leer_manifiesto(a.manifiesto, a.raiz), a.quien)
+    man = filtrar(leer_manifiesto(a.manifiesto, a.raiz), a.quien, a.obras)
     cmd_verificar(a)
 
     os.makedirs(a.salida, exist_ok=True)
@@ -431,6 +436,7 @@ def main(argv=None):
         sp.add_argument("--manifiesto", required=True, help="CSV con una fila por obra")
         sp.add_argument("--raiz", default=".", help="carpeta base de las rutas del manifiesto")
         sp.add_argument("--quien", help="corre solo las filas con este `responsable`")
+        sp.add_argument("--obras", help="corre solo estas obras (nombres separados por coma)")
 
     sp = sub.add_parser("verificar", help="marcadores de momento y costo, sin llamadas")
     con_manifiesto(sp)

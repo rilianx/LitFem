@@ -1,0 +1,78 @@
+# Corre el corpus PTM-V con la API de OpenAI y deja los CSV en la misma rama.
+#
+# Se dispara al cambiar corpus/pedido.json en una rama claude/** (o a mano, desde la
+# pestaña Actions, cuando el workflow este en main). El pedido dice que banco usar, en que
+# carpeta guardar y que obras correr ("" = todas). La corrida es reanudable: los casos que
+# ya tienen CSV en la carpeta de salida no se repiten.
+name: PTM-V corpus
+
+on:
+  push:
+    branches: ["claude/**"]
+    paths: ["corpus/pedido.json"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ptmv-corpus-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  correr:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Instalar litfem
+        run: pip install -e . matplotlib
+
+      - name: Leer pedido
+        id: pedido
+        run: |
+          echo "banco=$(jq -r '.banco' corpus/pedido.json)" >> "$GITHUB_OUTPUT"
+          echo "salida=$(jq -r '.salida' corpus/pedido.json)" >> "$GITHUB_OUTPUT"
+          echo "obras=$(jq -r '.obras // ""' corpus/pedido.json)" >> "$GITHUB_OUTPUT"
+          echo "paralelo=$(jq -r '.paralelo // 3' corpus/pedido.json)" >> "$GITHUB_OUTPUT"
+          cat corpus/pedido.json
+
+      - name: Correr
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          OBRAS: ${{ steps.pedido.outputs.obras }}
+        run: |
+          if [ -z "$OPENAI_API_KEY" ]; then
+            echo "::error::Falta el secreto OPENAI_API_KEY en Settings > Secrets and variables > Actions"
+            exit 1
+          fi
+          args=(--manifiesto corpus/manifiesto.csv --raiz corpus/textos
+                --salida "${{ steps.pedido.outputs.salida }}"
+                --banco "${{ steps.pedido.outputs.banco }}"
+                --paralelo "${{ steps.pedido.outputs.paralelo }}")
+          if [ -n "$OBRAS" ]; then args+=(--obras "$OBRAS"); fi
+          python scripts/ptmv_corpus.py correr "${args[@]}"
+
+      - name: Analizar
+        if: always()
+        run: python scripts/ptmv_corpus.py analizar --salida "${{ steps.pedido.outputs.salida }}" || true
+
+      - name: Guardar resultados en la rama
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "${{ steps.pedido.outputs.salida }}"
+          if git diff --cached --quiet; then
+            echo "Sin resultados nuevos."
+          else
+            git commit -m "Resultados PTM-V: ${{ steps.pedido.outputs.salida }} (run ${{ github.run_id }})"
+            git pull --rebase origin "${GITHUB_REF_NAME}"
+            git push origin "HEAD:${GITHUB_REF_NAME}"
+          fi
