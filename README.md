@@ -105,6 +105,24 @@ mostrar_consolidado(consolidar(largo), "Libro por fragmentos")
 | `calibrar(pares, grupo="obra")` | Ajusta desfase/recta, global o por dimensión, y los valida **dejando la obra completa fuera** (dos personajes del mismo libro nunca se separan): el MAE de validación es el error esperado en una obra nueva |
 | `MODELOS` | Los modelos de calibración disponibles, para aplicar el elegido a una obra nueva |
 
+## Corpus resumen vs libro desde la línea de comandos
+
+`scripts/ptmv_corpus.py` es el notebook *PTMV_Corpus20* como script (Colab, local o
+GitHub Actions). El banco de preguntas y el prompt viven en `bancos/` (por defecto
+`bancos/ptmv_v4.py`).
+
+```bash
+python scripts/ptmv_corpus.py verificar --manifiesto corpus.csv --raiz CARPETA_LIBROS
+python scripts/ptmv_corpus.py correr    --manifiesto corpus.csv --raiz CARPETA_LIBROS --salida resultados/v4 --quien anto
+python scripts/ptmv_corpus.py revisar   --salida resultados/v4        # --borrar para rehacer CSV con errores
+python scripts/ptmv_corpus.py analizar  --salida resultados/v4        # tablas y gráficos en resultados/v4/analisis
+```
+
+El manifiesto tiene una fila por obra: `carpeta,libro,resumen,obra,anio,personajes,responsable`
+(`personajes` separados por `;`). `correr` necesita `OPENAI_API_KEY`, se detiene si la carpeta
+de salida fue medida con otra configuración y anota la firma en cada CSV; `analizar` avisa si
+la carpeta mezcla configuraciones.
+
 ## Publicar en GitHub
 
 ```bash
