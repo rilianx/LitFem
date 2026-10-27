@@ -1,6 +1,6 @@
-modelo,MAE ajuste,sesgo ajuste
-sin calibrar,0.467,-0.154
-desfase global,0.498,0.0
-desfase por dimension,0.385,0.0
-lineal global,0.335,0.0
-lineal por dimension,0.098,-0.0
+modelo,MAE ajuste,sesgo ajuste,MAE validacion,sesgo validacion,sobreajuste
+sin calibrar,0.534,0.005,0.534,0.005,0.0
+desfase global,0.534,-0.0,0.54,0.001,0.006
+desfase por dimension,0.522,0.0,0.533,0.0,0.011
+lineal global,0.464,0.0,0.472,-0.001,0.008
+lineal por dimension,0.299,-0.0,0.319,-0.002,0.02
