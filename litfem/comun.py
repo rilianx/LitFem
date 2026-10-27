@@ -47,6 +47,15 @@ def a_numero(score):
         return None
 
 
+def columnas_unidad(df):
+    """
+    Columnas que identifican una UNIDAD (fragmento o momento) en el formato largo.
+    `fuente` es el numero de fragmento dentro de su libro, asi que se repite entre
+    obras: en un largo con varios casos juntos la unidad lleva tambien `caso`.
+    """
+    return (["caso"] if "caso" in df.columns else []) + ["fuente", "momento"]
+
+
 def _display(obj):
     try:
         from IPython.display import display

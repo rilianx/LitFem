@@ -1,0 +1,285 @@
+caso,obra,personaje,dimension,momento,A_resumen,B_libro
+Adeline_Mowbray__Adeline,Adeline Mowbray,Adeline,P,A,4.359999999999999,4.39047619047619
+Adeline_Mowbray__Adeline,Adeline Mowbray,Adeline,P,B,4.84,4.62
+Adeline_Mowbray__Adeline,Adeline Mowbray,Adeline,P,C,3.8,3.9727272727272727
+Adeline_Mowbray__Adeline,Adeline Mowbray,Adeline,T,A,3.9200000000000004,4.840000000000001
+Adeline_Mowbray__Adeline,Adeline Mowbray,Adeline,T,B,4.8,5.0
+Adeline_Mowbray__Adeline,Adeline Mowbray,Adeline,T,C,4.84,4.6
+Adeline_Mowbray__Adeline,Adeline Mowbray,Adeline,M,A,4.52,4.746666666666667
+Adeline_Mowbray__Adeline,Adeline Mowbray,Adeline,M,B,5.0,4.966666666666667
+Adeline_Mowbray__Adeline,Adeline Mowbray,Adeline,M,C,4.92,4.55
+Adeline_Mowbray__Adeline,Adeline Mowbray,Adeline,Vn,A,4.4799999999999995,4.826666666666666
+Adeline_Mowbray__Adeline,Adeline Mowbray,Adeline,Vn,B,5.0,4.926666666666667
+Adeline_Mowbray__Adeline,Adeline Mowbray,Adeline,Vn,C,4.5600000000000005,4.775
+Adeline_Mowbray__Adeline,Adeline Mowbray,Adeline,Vr,A,1.4,4.293333333333334
+Adeline_Mowbray__Adeline,Adeline Mowbray,Adeline,Vr,B,3.7199999999999998,3.72
+Adeline_Mowbray__Adeline,Adeline Mowbray,Adeline,Vr,C,4.88,3.9696969696969697
+Adeline_Mowbray__Adeline,Adeline Mowbray,Adeline,Vp,A,1.32,2.300952380952381
+Adeline_Mowbray__Adeline,Adeline Mowbray,Adeline,Vp,B,1.8,2.0714942528735634
+Adeline_Mowbray__Adeline,Adeline Mowbray,Adeline,Vp,C,2.88,1.9354545454545455
+Iliad__Achilles,Iliad,Achilles,P,A,4.96,4.252380952380952
+Iliad__Achilles,Iliad,Achilles,P,B,4.92,3.935787741670095
+Iliad__Achilles,Iliad,Achilles,P,C,4.4,4.196060606060606
+Iliad__Achilles,Iliad,Achilles,T,A,4.840000000000001,4.92
+Iliad__Achilles,Iliad,Achilles,T,B,4.84,5.0
+Iliad__Achilles,Iliad,Achilles,T,C,5.0,5.0
+Iliad__Achilles,Iliad,Achilles,M,A,5.0,4.356349206349206
+Iliad__Achilles,Iliad,Achilles,M,B,5.0,4.184526695526696
+Iliad__Achilles,Iliad,Achilles,M,C,5.0,4.421794871794871
+Iliad__Achilles,Iliad,Achilles,Vn,A,4.96,4.204835164835165
+Iliad__Achilles,Iliad,Achilles,Vn,B,4.92,4.2475000000000005
+Iliad__Achilles,Iliad,Achilles,Vn,C,4.8,4.388131868131868
+Iliad__Achilles,Iliad,Achilles,Vr,A,4.2,2.2
+Iliad__Achilles,Iliad,Achilles,Vr,B,4.159999999999999,3.1105401844532277
+Iliad__Achilles,Iliad,Achilles,Vr,C,3.84,3.1493939393939394
+Iliad__Achilles,Iliad,Achilles,Vp,A,2.68,2.259747474747475
+Iliad__Achilles,Iliad,Achilles,Vp,B,3.1599999999999993,3.5274884535754096
+Iliad__Achilles,Iliad,Achilles,Vp,C,4.0,3.4394383394383397
+Lady_Anna__Anna,Lady Anna,Anna,P,A,3.19,3.2684981684981684
+Lady_Anna__Anna,Lady Anna,Anna,P,B,5.0,3.895862068965518
+Lady_Anna__Anna,Lady Anna,Anna,P,C,4.880000000000001,3.9196969696969695
+Lady_Anna__Anna,Lady Anna,Anna,T,A,1.9600000000000002,3.8
+Lady_Anna__Anna,Lady Anna,Anna,T,B,4.279999999999999,4.4
+Lady_Anna__Anna,Lady Anna,Anna,T,C,5.0,5.0
+Lady_Anna__Anna,Lady Anna,Anna,M,A,3.8,4.283699633699634
+Lady_Anna__Anna,Lady Anna,Anna,M,B,4.96,4.5648275862068965
+Lady_Anna__Anna,Lady Anna,Anna,M,C,4.4399999999999995,4.233333333333333
+Lady_Anna__Anna,Lady Anna,Anna,Vn,A,4.220000000000001,4.396190476190476
+Lady_Anna__Anna,Lady Anna,Anna,Vn,B,4.96,4.6
+Lady_Anna__Anna,Lady Anna,Anna,Vn,C,4.470000000000001,4.483333333333333
+Lady_Anna__Anna,Lady Anna,Anna,Vr,A,4.16,2.1536630036630036
+Lady_Anna__Anna,Lady Anna,Anna,Vr,B,2.84,2.6742528735632183
+Lady_Anna__Anna,Lady Anna,Anna,Vr,C,3.0799999999999996,2.1333333333333333
+Lady_Anna__Anna,Lady Anna,Anna,Vp,A,2.08,2.111904761904762
+Lady_Anna__Anna,Lady Anna,Anna,Vp,B,2.6399999999999997,2.3256410256410254
+Lady_Anna__Anna,Lady Anna,Anna,Vp,C,4.08,2.3694638694638694
+Lummox__Bertha,Lummox,Bertha,P,A,2.386666666666667,4.082051282051282
+Lummox__Bertha,Lummox,Bertha,P,B,4.319999999999999,3.782051282051282
+Lummox__Bertha,Lummox,Bertha,P,C,4.040000000000001,3.3863636363636367
+Lummox__Bertha,Lummox,Bertha,T,A,2.64,4.279999999999999
+Lummox__Bertha,Lummox,Bertha,T,B,4.359999999999999,4.5600000000000005
+Lummox__Bertha,Lummox,Bertha,T,C,4.32,4.0
+Lummox__Bertha,Lummox,Bertha,M,A,3.4800000000000004,4.840000000000001
+Lummox__Bertha,Lummox,Bertha,M,B,4.720000000000001,4.428505747126437
+Lummox__Bertha,Lummox,Bertha,M,C,4.6,4.433333333333334
+Lummox__Bertha,Lummox,Bertha,Vn,A,3.8499999999999996,4.880000000000001
+Lummox__Bertha,Lummox,Bertha,Vn,B,4.92,4.439523809523809
+Lummox__Bertha,Lummox,Bertha,Vn,C,4.76,4.542424242424243
+Lummox__Bertha,Lummox,Bertha,Vr,A,1.0,2.24
+Lummox__Bertha,Lummox,Bertha,Vr,B,1.7200000000000002,2.57
+Lummox__Bertha,Lummox,Bertha,Vr,C,2.8400000000000003,2.368181818181818
+Lummox__Bertha,Lummox,Bertha,Vp,A,1.0666666666666667,1.2228571428571429
+Lummox__Bertha,Lummox,Bertha,Vp,B,1.1600000000000001,1.52562962962963
+Lummox__Bertha,Lummox,Bertha,Vp,C,1.16,1.696060606060606
+Madame_Bovary__Emma,Madame Bovary,Emma,P,A,3.5199999999999996,3.6
+Madame_Bovary__Emma,Madame Bovary,Emma,P,B,4.32,3.701379310344828
+Madame_Bovary__Emma,Madame Bovary,Emma,P,C,4.84,3.7262626262626264
+Madame_Bovary__Emma,Madame Bovary,Emma,T,A,3.3600000000000003,4.0
+Madame_Bovary__Emma,Madame Bovary,Emma,T,B,5.0,4.6
+Madame_Bovary__Emma,Madame Bovary,Emma,T,C,4.8,5.0
+Madame_Bovary__Emma,Madame Bovary,Emma,M,A,4.92,4.5538461538461545
+Madame_Bovary__Emma,Madame Bovary,Emma,M,B,5.0,4.82
+Madame_Bovary__Emma,Madame Bovary,Emma,M,C,4.96,4.643939393939394
+Madame_Bovary__Emma,Madame Bovary,Emma,Vn,A,4.68,4.564102564102565
+Madame_Bovary__Emma,Madame Bovary,Emma,Vn,B,4.840000000000001,4.72
+Madame_Bovary__Emma,Madame Bovary,Emma,Vn,C,4.92,4.666666666666666
+Madame_Bovary__Emma,Madame Bovary,Emma,Vr,A,3.3600000000000003,2.108891108891109
+Madame_Bovary__Emma,Madame Bovary,Emma,Vr,B,1.7599999999999998,2.2266666666666666
+Madame_Bovary__Emma,Madame Bovary,Emma,Vr,C,1.28,2.35
+Madame_Bovary__Emma,Madame Bovary,Emma,Vp,A,1.48,2.0634032634032637
+Madame_Bovary__Emma,Madame Bovary,Emma,Vp,B,1.72,1.7479310344827588
+Madame_Bovary__Emma,Madame Bovary,Emma,Vp,C,1.2,1.6156565656565658
+Northanger_Abbey__Catherine_Morland,Northanger Abbey,Catherine Morland,P,A,3.96,3.7600000000000002
+Northanger_Abbey__Catherine_Morland,Northanger Abbey,Catherine Morland,P,B,4.44,4.026666666666666
+Northanger_Abbey__Catherine_Morland,Northanger Abbey,Catherine Morland,P,C,3.3600000000000003,3.8800000000000003
+Northanger_Abbey__Catherine_Morland,Northanger Abbey,Catherine Morland,T,A,2.99,3.56
+Northanger_Abbey__Catherine_Morland,Northanger Abbey,Catherine Morland,T,B,4.2,4.6
+Northanger_Abbey__Catherine_Morland,Northanger Abbey,Catherine Morland,T,C,2.7600000000000002,3.8400000000000007
+Northanger_Abbey__Catherine_Morland,Northanger Abbey,Catherine Morland,M,A,4.68,4.666666666666666
+Northanger_Abbey__Catherine_Morland,Northanger Abbey,Catherine Morland,M,B,5.0,4.753333333333334
+Northanger_Abbey__Catherine_Morland,Northanger Abbey,Catherine Morland,M,C,4.319999999999999,4.826666666666667
+Northanger_Abbey__Catherine_Morland,Northanger Abbey,Catherine Morland,Vn,A,4.4399999999999995,4.48
+Northanger_Abbey__Catherine_Morland,Northanger Abbey,Catherine Morland,Vn,B,4.92,4.6466666666666665
+Northanger_Abbey__Catherine_Morland,Northanger Abbey,Catherine Morland,Vn,C,4.5600000000000005,4.880000000000001
+Northanger_Abbey__Catherine_Morland,Northanger Abbey,Catherine Morland,Vr,A,3.04,3.3095238095238093
+Northanger_Abbey__Catherine_Morland,Northanger Abbey,Catherine Morland,Vr,B,3.6799999999999997,3.283990147783251
+Northanger_Abbey__Catherine_Morland,Northanger Abbey,Catherine Morland,Vr,C,4.6,4.106666666666667
+Northanger_Abbey__Catherine_Morland,Northanger Abbey,Catherine Morland,Vp,A,1.92,2.2666666666666666
+Northanger_Abbey__Catherine_Morland,Northanger Abbey,Catherine Morland,Vp,B,1.8399999999999999,2.2191935778142673
+Northanger_Abbey__Catherine_Morland,Northanger Abbey,Catherine Morland,Vp,C,1.67,2.0133333333333336
+Robinson_Crusoe__Robinson_Crusoe,Robinson Crusoe,Robinson Crusoe,P,A,3.5199999999999996,4.116581196581197
+Robinson_Crusoe__Robinson_Crusoe,Robinson Crusoe,Robinson Crusoe,P,B,4.680000000000001,4.3238095238095235
+Robinson_Crusoe__Robinson_Crusoe,Robinson Crusoe,Robinson Crusoe,P,C,4.88,4.546666666666667
+Robinson_Crusoe__Robinson_Crusoe,Robinson Crusoe,Robinson Crusoe,T,A,4.84,5.0
+Robinson_Crusoe__Robinson_Crusoe,Robinson Crusoe,Robinson Crusoe,T,B,5.0,5.0
+Robinson_Crusoe__Robinson_Crusoe,Robinson Crusoe,Robinson Crusoe,T,C,5.0,5.0
+Robinson_Crusoe__Robinson_Crusoe,Robinson Crusoe,Robinson Crusoe,M,A,4.880000000000001,4.92
+Robinson_Crusoe__Robinson_Crusoe,Robinson Crusoe,Robinson Crusoe,M,B,5.0,4.96
+Robinson_Crusoe__Robinson_Crusoe,Robinson Crusoe,Robinson Crusoe,M,C,4.76,4.906666666666667
+Robinson_Crusoe__Robinson_Crusoe,Robinson Crusoe,Robinson Crusoe,Vn,A,4.68,4.6
+Robinson_Crusoe__Robinson_Crusoe,Robinson Crusoe,Robinson Crusoe,Vn,B,4.96,4.84
+Robinson_Crusoe__Robinson_Crusoe,Robinson Crusoe,Robinson Crusoe,Vn,C,4.73,4.946666666666667
+Robinson_Crusoe__Robinson_Crusoe,Robinson Crusoe,Robinson Crusoe,Vr,A,2.9200000000000004,2.9555555555555553
+Robinson_Crusoe__Robinson_Crusoe,Robinson Crusoe,Robinson Crusoe,Vr,B,3.4799999999999995,2.8116320212295447
+Robinson_Crusoe__Robinson_Crusoe,Robinson Crusoe,Robinson Crusoe,Vr,C,3.7699999999999996,4.093333333333333
+Robinson_Crusoe__Robinson_Crusoe,Robinson Crusoe,Robinson Crusoe,Vp,A,2.4799999999999995,2.7516161616161616
+Robinson_Crusoe__Robinson_Crusoe,Robinson Crusoe,Robinson Crusoe,Vp,B,3.6,2.9087513061650996
+Robinson_Crusoe__Robinson_Crusoe,Robinson Crusoe,Robinson Crusoe,Vp,C,4.96,4.08
+Sweet_Rocket__Marget_Land,Sweet Rocket,Marget Land,P,A,3.9200000000000004,4.5224175824175825
+Sweet_Rocket__Marget_Land,Sweet Rocket,Marget Land,P,B,4.32,4.179177109440268
+Sweet_Rocket__Marget_Land,Sweet Rocket,Marget Land,P,C,4.79,3.638246753246753
+Sweet_Rocket__Marget_Land,Sweet Rocket,Marget Land,T,A,4.3,4.640000000000001
+Sweet_Rocket__Marget_Land,Sweet Rocket,Marget Land,T,B,2.6799999999999997,5.0
+Sweet_Rocket__Marget_Land,Sweet Rocket,Marget Land,T,C,4.4799999999999995,3.9200000000000004
+Sweet_Rocket__Marget_Land,Sweet Rocket,Marget Land,M,A,4.640000000000001,4.96
+Sweet_Rocket__Marget_Land,Sweet Rocket,Marget Land,M,B,5.0,4.609471264367817
+Sweet_Rocket__Marget_Land,Sweet Rocket,Marget Land,M,C,4.84,4.042564102564103
+Sweet_Rocket__Marget_Land,Sweet Rocket,Marget Land,Vn,A,4.840000000000001,4.946666666666667
+Sweet_Rocket__Marget_Land,Sweet Rocket,Marget Land,Vn,B,4.96,4.655072463768116
+Sweet_Rocket__Marget_Land,Sweet Rocket,Marget Land,Vn,C,4.88,4.175238095238095
+Sweet_Rocket__Marget_Land,Sweet Rocket,Marget Land,Vr,A,3.6799999999999997,4.0371428571428565
+Sweet_Rocket__Marget_Land,Sweet Rocket,Marget Land,Vr,B,4.5600000000000005,3.798518518518519
+Sweet_Rocket__Marget_Land,Sweet Rocket,Marget Land,Vr,C,4.4875,3.323809523809524
+Sweet_Rocket__Marget_Land,Sweet Rocket,Marget Land,Vp,A,3.16,3.405164835164835
+Sweet_Rocket__Marget_Land,Sweet Rocket,Marget Land,Vp,B,2.88,2.9416494782911573
+Sweet_Rocket__Marget_Land,Sweet Rocket,Marget Land,Vp,C,4.16,3.1773626373626374
+Tess_of_the_d'Urbervilles__Tess,Tess of the d'Urbervilles,Tess,P,A,4.08,4.467948717948717
+Tess_of_the_d'Urbervilles__Tess,Tess of the d'Urbervilles,Tess,P,B,4.48,4.214942528735632
+Tess_of_the_d'Urbervilles__Tess,Tess of the d'Urbervilles,Tess,P,C,4.76,4.1066666666666665
+Tess_of_the_d'Urbervilles__Tess,Tess of the d'Urbervilles,Tess,T,A,3.88,5.0
+Tess_of_the_d'Urbervilles__Tess,Tess of the d'Urbervilles,Tess,T,B,4.44,4.8
+Tess_of_the_d'Urbervilles__Tess,Tess of the d'Urbervilles,Tess,T,C,4.8,4.680000000000001
+Tess_of_the_d'Urbervilles__Tess,Tess of the d'Urbervilles,Tess,M,A,4.76,4.7897435897435905
+Tess_of_the_d'Urbervilles__Tess,Tess of the d'Urbervilles,Tess,M,B,5.0,4.933333333333333
+Tess_of_the_d'Urbervilles__Tess,Tess of the d'Urbervilles,Tess,M,C,5.0,4.706666666666666
+Tess_of_the_d'Urbervilles__Tess,Tess of the d'Urbervilles,Tess,Vn,A,4.8,4.709350649350649
+Tess_of_the_d'Urbervilles__Tess,Tess of the d'Urbervilles,Tess,Vn,B,5.0,4.966666666666667
+Tess_of_the_d'Urbervilles__Tess,Tess of the d'Urbervilles,Tess,Vn,C,5.0,4.8533333333333335
+Tess_of_the_d'Urbervilles__Tess,Tess of the d'Urbervilles,Tess,Vr,A,1.24,2.126923076923077
+Tess_of_the_d'Urbervilles__Tess,Tess of the d'Urbervilles,Tess,Vr,B,1.8800000000000001,3.3174712643678155
+Tess_of_the_d'Urbervilles__Tess,Tess of the d'Urbervilles,Tess,Vr,C,3.88,2.9733333333333336
+Tess_of_the_d'Urbervilles__Tess,Tess of the d'Urbervilles,Tess,Vp,A,1.0,1.7145454545454544
+Tess_of_the_d'Urbervilles__Tess,Tess of the d'Urbervilles,Tess,Vp,B,1.2,1.8485714285714283
+Tess_of_the_d'Urbervilles__Tess,Tess of the d'Urbervilles,Tess,Vp,C,1.9600000000000002,1.7156776556776556
+The_Bent_Twig__Sylvia_Marshall,The Bent Twig,Sylvia Marshall,P,A,4.44,3.311558441558442
+The_Bent_Twig__Sylvia_Marshall,The Bent Twig,Sylvia Marshall,P,B,4.72,4.148045977011494
+The_Bent_Twig__Sylvia_Marshall,The Bent Twig,Sylvia Marshall,P,C,5.0,4.566666666666666
+The_Bent_Twig__Sylvia_Marshall,The Bent Twig,Sylvia Marshall,T,A,3.12,3.6
+The_Bent_Twig__Sylvia_Marshall,The Bent Twig,Sylvia Marshall,T,B,4.96,4.6
+The_Bent_Twig__Sylvia_Marshall,The Bent Twig,Sylvia Marshall,T,C,4.8,4.6
+The_Bent_Twig__Sylvia_Marshall,The Bent Twig,Sylvia Marshall,M,A,5.0,4.607619047619048
+The_Bent_Twig__Sylvia_Marshall,The Bent Twig,Sylvia Marshall,M,B,5.0,4.88
+The_Bent_Twig__Sylvia_Marshall,The Bent Twig,Sylvia Marshall,M,C,5.0,5.0
+The_Bent_Twig__Sylvia_Marshall,The Bent Twig,Sylvia Marshall,Vn,A,4.88,4.649230769230769
+The_Bent_Twig__Sylvia_Marshall,The Bent Twig,Sylvia Marshall,Vn,B,4.88,4.846666666666666
+The_Bent_Twig__Sylvia_Marshall,The Bent Twig,Sylvia Marshall,Vn,C,5.0,4.9
+The_Bent_Twig__Sylvia_Marshall,The Bent Twig,Sylvia Marshall,Vr,A,2.96,3.294652014652015
+The_Bent_Twig__Sylvia_Marshall,The Bent Twig,Sylvia Marshall,Vr,B,2.7600000000000002,3.2
+The_Bent_Twig__Sylvia_Marshall,The Bent Twig,Sylvia Marshall,Vr,C,4.24,3.1333333333333337
+The_Bent_Twig__Sylvia_Marshall,The Bent Twig,Sylvia Marshall,Vp,A,2.04,1.9804029304029307
+The_Bent_Twig__Sylvia_Marshall,The Bent Twig,Sylvia Marshall,Vp,B,2.9199999999999995,2.564403183023873
+The_Bent_Twig__Sylvia_Marshall,The Bent Twig,Sylvia Marshall,Vp,C,3.96,2.487878787878788
+The_Divine_Comedy__Dante,The Divine Comedy,Dante,P,A,4.32,4.0219047619047625
+The_Divine_Comedy__Dante,The Divine Comedy,Dante,P,B,4.319999999999999,4.009195402298851
+The_Divine_Comedy__Dante,The Divine Comedy,Dante,P,C,4.36,4.12
+The_Divine_Comedy__Dante,The Divine Comedy,Dante,T,A,4.2,4.040000000000001
+The_Divine_Comedy__Dante,The Divine Comedy,Dante,T,B,3.7600000000000002,4.0
+The_Divine_Comedy__Dante,The Divine Comedy,Dante,T,C,3.3200000000000003,4.2
+The_Divine_Comedy__Dante,The Divine Comedy,Dante,M,A,4.96,4.720000000000001
+The_Divine_Comedy__Dante,The Divine Comedy,Dante,M,B,5.0,4.886666666666667
+The_Divine_Comedy__Dante,The Divine Comedy,Dante,M,C,5.0,4.813333333333334
+The_Divine_Comedy__Dante,The Divine Comedy,Dante,Vn,A,5.0,4.733333333333334
+The_Divine_Comedy__Dante,The Divine Comedy,Dante,Vn,B,4.96,4.846666666666667
+The_Divine_Comedy__Dante,The Divine Comedy,Dante,Vn,C,4.92,4.866666666666667
+The_Divine_Comedy__Dante,The Divine Comedy,Dante,Vr,A,4.880000000000001,4.423589743589744
+The_Divine_Comedy__Dante,The Divine Comedy,Dante,Vr,B,4.640000000000001,4.487356321839081
+The_Divine_Comedy__Dante,The Divine Comedy,Dante,Vr,C,4.8,4.8933333333333335
+The_Divine_Comedy__Dante,The Divine Comedy,Dante,Vp,A,3.2,2.5887046287046287
+The_Divine_Comedy__Dante,The Divine Comedy,Dante,Vp,B,2.6799999999999997,2.728846153846154
+The_Divine_Comedy__Dante,The Divine Comedy,Dante,Vp,C,2.8400000000000003,2.6835431235431235
+The_Scarlet_Letter__Hester_Prynne,The Scarlet Letter,Hester Prynne,P,A,4.88,3.993333333333333
+The_Scarlet_Letter__Hester_Prynne,The Scarlet Letter,Hester Prynne,P,B,5.0,4.591666666666667
+The_Scarlet_Letter__Hester_Prynne,The Scarlet Letter,Hester Prynne,P,C,4.5200000000000005,4.48974358974359
+The_Scarlet_Letter__Hester_Prynne,The Scarlet Letter,Hester Prynne,T,A,4.04,4.64
+The_Scarlet_Letter__Hester_Prynne,The Scarlet Letter,Hester Prynne,T,B,5.0,4.6
+The_Scarlet_Letter__Hester_Prynne,The Scarlet Letter,Hester Prynne,T,C,3.6800000000000006,4.8
+The_Scarlet_Letter__Hester_Prynne,The Scarlet Letter,Hester Prynne,M,A,4.840000000000001,4.688571428571429
+The_Scarlet_Letter__Hester_Prynne,The Scarlet Letter,Hester Prynne,M,B,5.0,4.8999999999999995
+The_Scarlet_Letter__Hester_Prynne,The Scarlet Letter,Hester Prynne,M,C,4.6,4.786666666666667
+The_Scarlet_Letter__Hester_Prynne,The Scarlet Letter,Hester Prynne,Vn,A,5.0,4.514285714285714
+The_Scarlet_Letter__Hester_Prynne,The Scarlet Letter,Hester Prynne,Vn,B,5.0,4.908575757575758
+The_Scarlet_Letter__Hester_Prynne,The Scarlet Letter,Hester Prynne,Vn,C,4.73,4.795897435897436
+The_Scarlet_Letter__Hester_Prynne,The Scarlet Letter,Hester Prynne,Vr,A,1.1199999999999999,1.6466666666666665
+The_Scarlet_Letter__Hester_Prynne,The Scarlet Letter,Hester Prynne,Vr,B,3.16,2.3666666666666667
+The_Scarlet_Letter__Hester_Prynne,The Scarlet Letter,Hester Prynne,Vr,C,2.96,3.325714285714286
+The_Scarlet_Letter__Hester_Prynne,The Scarlet Letter,Hester Prynne,Vp,A,1.08,1.7055555555555553
+The_Scarlet_Letter__Hester_Prynne,The Scarlet Letter,Hester Prynne,Vp,B,2.52,1.5811594202898551
+The_Scarlet_Letter__Hester_Prynne,The Scarlet Letter,Hester Prynne,Vp,C,2.67,2.298095238095238
+The_Secret_Garden__Mary_Lennox,The Secret Garden,Mary Lennox,P,A,2.92,3.853333333333333
+The_Secret_Garden__Mary_Lennox,The Secret Garden,Mary Lennox,P,B,4.8,4.397011494252874
+The_Secret_Garden__Mary_Lennox,The Secret Garden,Mary Lennox,P,C,1.0,3.8546786546786542
+The_Secret_Garden__Mary_Lennox,The Secret Garden,Mary Lennox,T,A,2.2399999999999998,4.5200000000000005
+The_Secret_Garden__Mary_Lennox,The Secret Garden,Mary Lennox,T,B,5.0,5.0
+The_Secret_Garden__Mary_Lennox,The Secret Garden,Mary Lennox,M,A,4.199999999999999,4.786666666666667
+The_Secret_Garden__Mary_Lennox,The Secret Garden,Mary Lennox,M,B,4.88,4.860000000000001
+The_Secret_Garden__Mary_Lennox,The Secret Garden,Mary Lennox,M,C,2.0,4.24
+The_Secret_Garden__Mary_Lennox,The Secret Garden,Mary Lennox,Vn,A,4.2,4.733333333333334
+The_Secret_Garden__Mary_Lennox,The Secret Garden,Mary Lennox,Vn,B,4.8,4.738850574712644
+The_Secret_Garden__Mary_Lennox,The Secret Garden,Mary Lennox,Vn,C,2.75,4.366666666666666
+The_Secret_Garden__Mary_Lennox,The Secret Garden,Mary Lennox,Vr,A,1.16,2.64
+The_Secret_Garden__Mary_Lennox,The Secret Garden,Mary Lennox,Vr,B,4.08,3.6728205128205134
+The_Secret_Garden__Mary_Lennox,The Secret Garden,Mary Lennox,Vp,A,1.6,1.8942857142857144
+The_Secret_Garden__Mary_Lennox,The Secret Garden,Mary Lennox,Vp,B,2.96,2.898986990021473
+The_Secret_Garden__Mary_Lennox,The Secret Garden,Mary Lennox,Vp,C,1.0,2.793247863247863
+The_Song_of_the_Lark__Thea_Kronborg,The Song of the Lark,Thea Kronborg,P,A,4.88,3.8200000000000003
+The_Song_of_the_Lark__Thea_Kronborg,The Song of the Lark,Thea Kronborg,P,B,5.0,4.1387684729064045
+The_Song_of_the_Lark__Thea_Kronborg,The Song of the Lark,Thea Kronborg,P,C,4.84,4.424761904761905
+The_Song_of_the_Lark__Thea_Kronborg,The Song of the Lark,Thea Kronborg,T,A,4.0,3.56
+The_Song_of_the_Lark__Thea_Kronborg,The Song of the Lark,Thea Kronborg,T,B,4.92,4.6
+The_Song_of_the_Lark__Thea_Kronborg,The Song of the Lark,Thea Kronborg,T,C,4.84,4.8
+The_Song_of_the_Lark__Thea_Kronborg,The Song of the Lark,Thea Kronborg,M,A,5.0,4.546666666666667
+The_Song_of_the_Lark__Thea_Kronborg,The Song of the Lark,Thea Kronborg,M,B,5.0,4.825287356321839
+The_Song_of_the_Lark__Thea_Kronborg,The Song of the Lark,Thea Kronborg,M,C,5.0,4.8933333333333335
+The_Song_of_the_Lark__Thea_Kronborg,The Song of the Lark,Thea Kronborg,Vn,A,5.0,4.605714285714287
+The_Song_of_the_Lark__Thea_Kronborg,The Song of the Lark,Thea Kronborg,Vn,B,4.96,4.825287356321839
+The_Song_of_the_Lark__Thea_Kronborg,The Song of the Lark,Thea Kronborg,Vn,C,5.0,4.973333333333334
+The_Song_of_the_Lark__Thea_Kronborg,The Song of the Lark,Thea Kronborg,Vr,A,4.639999999999999,3.7535353535353537
+The_Song_of_the_Lark__Thea_Kronborg,The Song of the Lark,Thea Kronborg,Vr,B,4.68,4.09064039408867
+The_Song_of_the_Lark__Thea_Kronborg,The Song of the Lark,Thea Kronborg,Vr,C,3.6799999999999997,4.106666666666667
+The_Song_of_the_Lark__Thea_Kronborg,The Song of the Lark,Thea Kronborg,Vp,A,2.3600000000000003,1.9702797202797206
+The_Song_of_the_Lark__Thea_Kronborg,The Song of the Lark,Thea Kronborg,Vp,B,3.04,2.568970429315257
+The_Song_of_the_Lark__Thea_Kronborg,The Song of the Lark,Thea Kronborg,Vp,C,4.4799999999999995,3.1866666666666665
+The_Tale_of_Genji__Genji,The Tale of Genji,Genji,P,A,3.8400000000000007,3.4707070707070713
+The_Tale_of_Genji__Genji,The Tale of Genji,Genji,P,B,4.04,3.806666666666667
+The_Tale_of_Genji__Genji,The Tale of Genji,Genji,P,C,1.5,4.1066666666666665
+The_Tale_of_Genji__Genji,The Tale of Genji,Genji,T,A,5.0,4.4399999999999995
+The_Tale_of_Genji__Genji,The Tale of Genji,Genji,T,B,5.0,4.8
+The_Tale_of_Genji__Genji,The Tale of Genji,Genji,M,A,4.96,4.508624708624709
+The_Tale_of_Genji__Genji,The Tale of Genji,Genji,M,B,4.96,4.893333333333333
+The_Tale_of_Genji__Genji,The Tale of Genji,Genji,M,C,2.5,4.840000000000001
+The_Tale_of_Genji__Genji,The Tale of Genji,Genji,Vn,A,4.84,4.356754356754356
+The_Tale_of_Genji__Genji,The Tale of Genji,Genji,Vn,B,4.84,4.66
+The_Tale_of_Genji__Genji,The Tale of Genji,Genji,Vn,C,2.041666666666667,4.64
+The_Tale_of_Genji__Genji,The Tale of Genji,Genji,Vr,A,2.7600000000000002,2.9446231546231543
+The_Tale_of_Genji__Genji,The Tale of Genji,Genji,Vr,B,3.3600000000000003,3.4466666666666668
+The_Tale_of_Genji__Genji,The Tale of Genji,Genji,Vp,A,2.96,3.254545454545454
+The_Tale_of_Genji__Genji,The Tale of Genji,Genji,Vp,B,4.640000000000001,3.586666666666667
+The_Tale_of_Genji__Genji,The Tale of Genji,Genji,Vp,C,1.9444444444444446,3.662857142857143
+Vanity_Fair__Becky_Sharp,Vanity Fair,Becky Sharp,P,A,4.6,3.6148051948051942
+Vanity_Fair__Becky_Sharp,Vanity Fair,Becky Sharp,P,B,4.16,3.622099567099567
+Vanity_Fair__Becky_Sharp,Vanity Fair,Becky Sharp,P,C,3.6,3.9904761904761905
+Vanity_Fair__Becky_Sharp,Vanity Fair,Becky Sharp,T,A,4.279999999999999,4.8
+Vanity_Fair__Becky_Sharp,Vanity Fair,Becky Sharp,T,B,4.92,5.0
+Vanity_Fair__Becky_Sharp,Vanity Fair,Becky Sharp,T,C,5.0,5.0
+Vanity_Fair__Becky_Sharp,Vanity Fair,Becky Sharp,M,A,4.800000000000001,4.232380952380952
+Vanity_Fair__Becky_Sharp,Vanity Fair,Becky Sharp,M,B,4.96,4.487195260879472
+Vanity_Fair__Becky_Sharp,Vanity Fair,Becky Sharp,M,C,4.279999999999999,4.5600000000000005
+Vanity_Fair__Becky_Sharp,Vanity Fair,Becky Sharp,Vn,A,4.4,3.8
+Vanity_Fair__Becky_Sharp,Vanity Fair,Becky Sharp,Vn,B,4.48,3.924385964912281
+Vanity_Fair__Becky_Sharp,Vanity Fair,Becky Sharp,Vn,C,3.8,4.343333333333333
+Vanity_Fair__Becky_Sharp,Vanity Fair,Becky Sharp,Vr,A,2.32,1.9584371184371185
+Vanity_Fair__Becky_Sharp,Vanity Fair,Becky Sharp,Vr,B,1.8800000000000001,2.0251317523056658
+Vanity_Fair__Becky_Sharp,Vanity Fair,Becky Sharp,Vr,C,1.16,2.8933333333333335
+Vanity_Fair__Becky_Sharp,Vanity Fair,Becky Sharp,Vp,A,1.24,2.2106959706959706
+Vanity_Fair__Becky_Sharp,Vanity Fair,Becky Sharp,Vp,B,3.5200000000000005,2.43818130610808
+Vanity_Fair__Becky_Sharp,Vanity Fair,Becky Sharp,Vp,C,2.12,3.026666666666667

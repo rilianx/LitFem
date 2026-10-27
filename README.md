@@ -2,7 +2,30 @@
 
 Análisis literario PTM-V de personajes con LLM (LangChain + OpenAI, salidas estructuradas).
 
-La librería **no contiene prompts ni preguntas**: viven en el notebook y se pasan como argumento.
+La librería **no contiene prompts ni preguntas**: se pasan como argumento. Los bancos de preguntas
+versionados viven en `bancos/` y el estudio resumen-vs-libro corre desde `scripts/`.
+
+## Instalación
+
+```bash
+pip install "git+https://github.com/rilianx/LitFem.git"     # o, en un clon: pip install -e .
+```
+
+La API key se lee de `OPENAI_API_KEY` (variable de entorno, Colab Secrets o `.env`); nunca se
+escribe en el código ni en el notebook.
+
+## Estructura del repo
+
+| Ruta | Qué hay |
+|---|---|
+| `litfem/` | La librería |
+| `bancos/ptmv_v4.py` | Banco de 30 preguntas PTM-V y prompt de puntuación vigentes (cambios respecto de v3 en su docstring) |
+| `scripts/ptmv_corpus.py` | Estudio resumen (A) vs libro (B) sobre un corpus: verificar, correr, revisar, analizar |
+| `scripts/auditar_resumenes.py` | Contrasta cada resumen con su libro: citas que no están, nombres inventados |
+| `corpus/manifiesto.csv`, `corpus/textos/` | Las 16 obras del corpus (libro + resumen por carpeta) |
+| `corpus/pedido.json` | Qué corrida pide el workflow de GitHub Actions |
+| `corpus/resultados/<version>/` | Un CSV por caso y modo, `_config.json` con la firma y `analisis/` |
+| `.github/workflows/ptmv-corpus.yml` | Corre el corpus en GitHub Actions con el secreto del repo |
 
 ## Un solo procedimiento
 
@@ -82,9 +105,9 @@ mostrar_consolidado(consolidar(largo), "Libro por fragmentos")
 | Función | Qué hace |
 |---|---|
 | `repetibilidad(largo)` | Test-retest: MAE entre corridas del mismo modo. Es el **techo** de acuerdo alcanzable contra cualquier otro modo |
-| `fiabilidad_preguntas(largo)` | Por pregunta: N/A, **N/A inconsistente** (misma unidad, a veces N/A y a veces número; y si ese número es bajo o alto), sd test-retest, flips y discriminación. Señala los tres síntomas de mala formulación |
+| `fiabilidad_preguntas(largo)` | Por pregunta: N/A, **N/A inconsistente** (misma unidad, a veces N/A y a veces número; y si ese número es bajo o alto), sd test-retest, flips y discriminación. Señala los tres síntomas de mala formulación. Con varios casos juntos, la unidad es (caso, fragmento, momento) |
 | `divergencias(largo, "P5", tipo="na"\|"div")` | Razonamientos de la misma unidad con respuestas discordantes, para ver cómo el modelo lee el enunciado de dos maneras |
-| `curva_unidades(largo)` | Curva de saturación: cuántos fragmentos hacen falta para que la tabla deje de moverse |
+| `curva_unidades(largo)` | Curva de saturación: cuántos fragmentos hacen falta para que la tabla deje de moverse (con varios casos, promedia por caso) |
 | `comparar_agregadores({...}, largo)` | Evalúa agregadores por **señal/ruido**, no por el acuerdo con otro modo |
 
 **Corpus** (correr muchas obras desde una planilla)
@@ -105,11 +128,66 @@ mostrar_consolidado(consolidar(largo), "Libro por fragmentos")
 | `calibrar(pares, grupo="obra")` | Ajusta desfase/recta, global o por dimensión, y los valida **dejando la obra completa fuera** (dos personajes del mismo libro nunca se separan): el MAE de validación es el error esperado en una obra nueva |
 | `MODELOS` | Los modelos de calibración disponibles, para aplicar el elegido a una obra nueva |
 
-## Publicar en GitHub
+## Corpus resumen vs libro desde la línea de comandos
+
+`scripts/ptmv_corpus.py` es el notebook *PTMV_Corpus20* como script (Colab, local o
+GitHub Actions). El banco de preguntas y el prompt se eligen con `--banco` (por defecto
+`bancos/ptmv_v4.py`).
 
 ```bash
-cd litfem-pkg
-git init && git add . && git commit -m "litfem v0.14.0"
-git remote add origin https://github.com/USUARIO/REPO.git
-git push -u origin main
+python scripts/ptmv_corpus.py verificar --manifiesto corpus/manifiesto.csv --raiz corpus/textos
+python scripts/ptmv_corpus.py correr    --manifiesto corpus/manifiesto.csv --raiz corpus/textos --salida corpus/resultados/v4
+python scripts/ptmv_corpus.py revisar   --salida corpus/resultados/v4     # --borrar para rehacer CSV con errores
+python scripts/ptmv_corpus.py analizar  --salida corpus/resultados/v4     # tablas y gráficos en <salida>/analisis
 ```
+
+- **Manifiesto**: una fila por obra, `carpeta,libro,resumen,obra,anio,personajes,responsable`
+  (`personajes` separados por `;`; rutas relativas a `--raiz`). `--quien` y `--obras` filtran filas.
+- **`verificar`** revisa los 3 marcadores de momento de cada resumen, el costo en llamadas y
+  avisa si dos resúmenes tienen conteos idénticos (archivo copiado).
+- **`correr`** es reanudable (saltea los CSV que ya existen), reintenta los 429 y se detiene si la
+  carpeta de salida fue medida con otra configuración (prompt, preguntas, modelo, muestra). Anota
+  esa firma en cada CSV.
+- **`analizar`** no gasta llamadas: repetibilidad, acuerdo A–B por caso, calibración con
+  validación cruzada por obra, efecto de posición, fiabilidad por pregunta, N/A inconsistente,
+  curva de fragmentos y comparación de agregadores de T caso por caso. Avisa si la carpeta mezcla
+  configuraciones.
+
+### Correr en GitHub Actions
+
+El workflow `.github/workflows/ptmv-corpus.yml` usa el secreto del repo `OPENAI_API_KEY`
+(*Settings → Secrets and variables → Actions*). Se dispara al cambiar `corpus/pedido.json` en una
+rama `claude/**` (o a mano desde *Actions* cuando esté en `main`):
+
+```json
+{"banco": "bancos/ptmv_v4.py", "salida": "corpus/resultados/v4", "obras": "", "paralelo": 3}
+```
+
+`obras` vacío corre todo el manifiesto; si no, nombres de obra separados por coma. Al terminar,
+el workflow hace commit de los CSV y del análisis en la misma rama.
+
+### Auditar los resúmenes
+
+```bash
+python scripts/auditar_resumenes.py --manifiesto corpus/manifiesto.csv --raiz corpus/textos --detalle citas.csv
+```
+
+Sin llamadas al LLM: qué fracción de las citas textuales del resumen aparece en el libro, si caen
+en la parte del libro que corresponde a su momento, y qué nombres del resumen no existen en el
+libro. En obras traducidas, una cita ausente puede ser solo otra traducción.
+
+## Estado del corpus (oct 2026)
+
+Corpus v4 (`corpus/resultados/v4`, 16 obras, banco v4): MAE resumen–libro 0.54, r 0.77, sesgo
+≈ 0; con calibración lineal por dimensión el error esperado en una obra nueva baja a 0.32.
+Frente a v3 en las mismas obras, el N/A inconsistente de las preguntas reformuladas baja de 0.20 a
+0.12 y el ruido entre corridas ~20 %.
+
+Problemas conocidos de los datos:
+- Resúmenes con citas o personajes inventados: Adeline Mowbray, Lummox, Sweet Rocket,
+  The Bent Twig, Lady Anna (y revisar The Song of the Lark). Hay que regenerarlos desde el texto.
+- `the tale of genji.txt` es solo el volumen 1 de Waley (9 de 54 capítulos); el resumen cubre la
+  obra completa.
+- La librería no quita el encabezado ni la licencia de Project Gutenberg: en 5 libros el último
+  fragmento del momento C es la licencia. La Ilíada (Pope) trae introducción y notas.
+- Vp1, Vp3 y Vp5 siguen sobre la meta de N/A inconsistente (0.15).

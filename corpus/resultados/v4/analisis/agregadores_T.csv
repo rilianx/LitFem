@@ -1,0 +1,6 @@
+agregador,T media (B),% celdas T >= 4.9 (techo),T: sd entre personajes,T: ruido entre corridas,T: discriminacion (sd/ruido),T: sesgo B-A,T: |dif| B-A,repetibilidad B (todas),MAE val. sin calibrar,MAE val. lineal x dim
+media,3.751,0.0,0.536,0.189,2.837,-0.485,0.713,0.181,0.569,0.334
+T p70,4.38,18.75,0.475,0.187,2.539,0.144,0.482,0.181,0.532,0.327
+T p80 (actual),4.539,29.167,0.416,0.157,2.651,0.309,0.497,0.174,0.534,0.319
+T p90,4.676,43.75,0.361,0.133,2.705,0.446,0.549,0.169,0.543,0.312
+T max,4.804,62.5,0.267,0.119,2.251,0.578,0.622,0.165,0.555,0.299

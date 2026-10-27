@@ -3,7 +3,7 @@
 import numpy as np
 import pandas as pd
 
-from .comun import _md, _display
+from .comun import _md, _display, columnas_unidad
 
 __all__ = ["tabla_cruda", "mostrar_razonamientos", "mostrar_na",
            "residuos_posicion", "efecto_posicion"]
@@ -59,7 +59,7 @@ def residuos_posicion(largo, control="auto"):
     QUE preguntas y QUE unidades cayeron ahi.
     """
     df = largo.copy()
-    celda = ["dimension", "pregunta", "fuente", "momento"]
+    celda = ["dimension", "pregunta"] + columnas_unidad(df)
     repeticiones = df.groupby(celda)["score"].transform("size")
 
     if control == "auto":
@@ -75,7 +75,7 @@ def residuos_posicion(largo, control="auto"):
         mu = df["score"].mean()
         df["residuo"] = (df["score"]
                          - df.groupby(["dimension", "pregunta"])["score"].transform("mean")
-                         - df.groupby(["fuente", "momento"])["score"].transform("mean") + mu)
+                         - df.groupby(columnas_unidad(df))["score"].transform("mean") + mu)
     elif control == "ninguno":
         df["residuo"] = df["score"] - df["score"].mean()
     else:

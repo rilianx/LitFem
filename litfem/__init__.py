@@ -34,7 +34,7 @@ from .validacion import (repetibilidad, fiabilidad_preguntas, divergencias, curv
                          comparar_agregadores)
 from .export import exportar_largo_excel, exportar_consolidado_excel
 
-__version__ = "0.14.0"
+__version__ = "0.15.0"
 
 __all__ = [n for n in dir() if not n.startswith("_") and n not in
            ("comun", "llm", "schemas", "preguntas", "unidades", "puntuar",

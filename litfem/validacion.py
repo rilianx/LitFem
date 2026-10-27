@@ -16,7 +16,7 @@ quiere: el numero sale bonito y no significa nada.
 import numpy as np
 import pandas as pd
 
-from .comun import _md, _display
+from .comun import _md, _display, columnas_unidad
 from .agregacion import consolidar, agregar_celda
 
 __all__ = ["repetibilidad", "fiabilidad_preguntas", "divergencias", "curva_unidades", "comparar_agregadores"]
@@ -84,7 +84,7 @@ def fiabilidad_preguntas(largo, mostrar=True, top=10):
     que segun la corrida la misma escena cuenta o no cuenta.
     """
     df = largo.copy()
-    unidad = ["fuente", "momento"]
+    unidad = columnas_unidad(df)
     filas = []
     for (dim, q), g in df.groupby(["dimension", "pregunta"], sort=False):
         por_u = g.groupby(unidad)["score"]
@@ -148,7 +148,7 @@ def divergencias(largo, id_pregunta, tipo="na", k=3, ancho=260, mostrar=True):
     """
     import textwrap
     df = largo[(largo["dimension"] + largo["pregunta"].str[1:]) == id_pregunta]
-    por_u = df.groupby(["fuente", "momento"])
+    por_u = df.groupby(columnas_unidad(df))
     if tipo == "na":
         sel = [u for u, d in por_u if d["score"].isna().any() and d["score"].notna().any()]
     else:
@@ -170,7 +170,16 @@ def curva_unidades(largo, tamanos=None, repeticiones=20, semilla=0, mostrar=True
     compara con la tabla completa. No gasta llamadas: reusa lo ya obtenido.
 
     Devuelve un DataFrame k -> MAE respecto de la tabla completa (media y sd).
+    Con varios casos en el mismo largo, la curva se calcula por caso y se promedia.
     """
+    if "caso" in largo.columns and largo["caso"].nunique() > 1:
+        por_caso = [curva_unidades(g, tamanos, repeticiones, semilla, mostrar=False, **kw)
+                    for _, g in largo.groupby("caso")]
+        t = pd.concat(por_caso).groupby(level=0).mean().round(3)
+        if mostrar:
+            _md(f"### Curva de saturacion (media de {len(por_caso)} casos)")
+            _display(t)
+        return t
     completo = consolidar(largo, **kw)["dimensiones"]
     unidades = sorted(largo["fuente"].unique())
     tamanos = tamanos or [k for k in (3, 5, 8, 10, 15, 20, 30) if k < len(unidades)]
